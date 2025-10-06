@@ -1,0 +1,13 @@
+{
+  "name": "code-time",
+  "version": "dev. 25w41",
+  "description": "See how much code magic you have created.",
+  "scripts": {
+    "types": "cd client && bun tsc && cd ../server && bun tsc"
+  },
+  "dependencies": {
+    "puppeteer-core": "^24.23.0",
+    "react-activity-calendar": "^2.7.14"
+  },
+  "devDependencies": {}
+}
