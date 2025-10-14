@@ -26,5 +26,11 @@
     "days": "Days",
     "hours": "Hours",
     "noTime": "No Time Recorded"
+  },
+  "empty": {
+    "activities": {
+      "title": "No Coding Activity Yet",
+      "description": "Start coding to see your activity here."
+    }
   }
 }

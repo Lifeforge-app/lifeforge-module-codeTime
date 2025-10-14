@@ -26,5 +26,11 @@
     "days": "Hari",
     "hours": "Jam",
     "noTime": "Tiada Masa Direkod"
+  },
+  "empty": {
+    "activities": {
+      "title": "Tiada Aktiviti Pengkodan Lagi",
+      "description": "Mula mengod untuk melihat aktiviti anda di sini."
+    }
   }
 }

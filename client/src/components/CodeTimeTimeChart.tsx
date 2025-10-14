@@ -14,7 +14,7 @@ import {
 } from 'chart.js'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
-import { DashboardItem, WithQuery } from 'lifeforge-ui'
+import { DashboardItem, EmptyStateScreen, WithQuery } from 'lifeforge-ui'
 import { useCallback, useMemo, useState } from 'react'
 import { Chart } from 'react-chartjs-2'
 import { usePersonalization } from 'shared'
@@ -41,7 +41,7 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
   const [lastFor, setLastFor] = useState<'7 days' | '30 days'>('7 days')
 
   const dataQuery = useQuery(
-    forgeAPI['code-time'].getLastXDays
+    forgeAPI['codeTime'].getLastXDays
       .input({
         days: lastFor.toString()
       })
@@ -173,55 +173,63 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
       />
       <div className="h-96 w-full">
         <WithQuery query={dataQuery}>
-          {data => (
-            <Chart
-              data={{
-                labels: data.map(e => dayjs(e.date).format('DD MMM')),
-                datasets: [
-                  ...projectsData.map((project, index) => ({
-                    type: 'bar' as const,
-                    label: project.label,
-                    data: project.data,
-                    backgroundColor: tinycolor({
-                      h: (index * 360) / projectsData.length,
-                      s: 100,
-                      v: 100,
-                      a: 0.4
-                    }).toRgbString(),
-                    borderColor: tinycolor({
-                      h: (index * 360) / projectsData.length,
-                      s: 100,
-                      v: 100,
-                      a: 1
-                    }).toRgbString(),
-                    borderWidth: 1,
-                    yAxisID: 'y',
-                    stack: 'stack1'
-                  })),
-                  {
-                    type: 'line' as const,
-                    label: 'Total minutes',
-                    data: data.map(e => e.total_minutes),
-                    borderColor:
-                      derivedTheme === 'dark'
-                        ? bgTempPalette[100]
-                        : bgTempPalette[500],
-                    tension: 0.4,
-                    borderWidth: 3,
-                    pointBorderColor: 'rgba(0, 0, 0, 0)',
-                    pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-                    pointHoverBackgroundColor: '#FFFFFF80',
-                    pointHoverBorderColor: '#FFFFFF',
-                    pointHoverBorderWidth: 2,
-                    pointHoverRadius: 6,
-                    yAxisID: 'y'
-                  }
-                ]
-              }}
-              options={chartOptions}
-              type="bar"
-            />
-          )}
+          {data =>
+            data.length > 0 ? (
+              <Chart
+                data={{
+                  labels: data.map(e => dayjs(e.date).format('DD MMM')),
+                  datasets: [
+                    ...projectsData.map((project, index) => ({
+                      type: 'bar' as const,
+                      label: project.label,
+                      data: project.data,
+                      backgroundColor: tinycolor({
+                        h: (index * 360) / projectsData.length,
+                        s: 100,
+                        v: 100,
+                        a: 0.4
+                      }).toRgbString(),
+                      borderColor: tinycolor({
+                        h: (index * 360) / projectsData.length,
+                        s: 100,
+                        v: 100,
+                        a: 1
+                      }).toRgbString(),
+                      borderWidth: 1,
+                      yAxisID: 'y',
+                      stack: 'stack1'
+                    })),
+                    {
+                      type: 'line' as const,
+                      label: 'Total minutes',
+                      data: data.map(e => e.total_minutes),
+                      borderColor:
+                        derivedTheme === 'dark'
+                          ? bgTempPalette[100]
+                          : bgTempPalette[500],
+                      tension: 0.4,
+                      borderWidth: 3,
+                      pointBorderColor: 'rgba(0, 0, 0, 0)',
+                      pointBackgroundColor: 'rgba(0, 0, 0, 0)',
+                      pointHoverBackgroundColor: '#FFFFFF80',
+                      pointHoverBorderColor: '#FFFFFF',
+                      pointHoverBorderWidth: 2,
+                      pointHoverRadius: 6,
+                      yAxisID: 'y'
+                    }
+                  ]
+                }}
+                options={chartOptions as any}
+                type="bar"
+              />
+            ) : (
+              <EmptyStateScreen
+                icon="tabler:calendar-off"
+                name="activities"
+                namespace="apps.codeTime"
+              />
+            )
+          }
         </WithQuery>
       </div>
     </DashboardItem>

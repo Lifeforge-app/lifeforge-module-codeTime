@@ -87,7 +87,7 @@ const chartOptions: ChartOptions = {
 }
 
 const CodeTime = () => {
-  const dataQuery = useQuery(forgeAPI['code-time'].getEachDay.queryOptions())
+const dataQuery = useQuery(forgeAPI['codeTime'].getEachDay.queryOptions())
 
   const { derivedThemeColor: themeColor } = usePersonalization()
 

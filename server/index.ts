@@ -37,6 +37,10 @@ const getActivities = forgeController
       ])
       .execute()
 
+    if (data.length === 0) {
+      return { data: [], firstYear: yearValue }
+    }
+
     const groupByDate = data.reduce(
       (acc, item) => {
         const dateKey = moment(item.date).format('YYYY-MM-DD')

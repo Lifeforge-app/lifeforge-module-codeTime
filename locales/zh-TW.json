@@ -26,5 +26,11 @@
     "days": "天",
     "hours": "小時",
     "noTime": "未記錄時間"
+  },
+  "empty": {
+    "activities": {
+      "title": "還沒有編碼活動",
+      "description": "開始編碼以在此處查看您的活動。"
+    }
   }
 }
