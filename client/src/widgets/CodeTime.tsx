@@ -18,7 +18,7 @@ import {
 } from 'lifeforge-ui'
 import { useMemo } from 'react'
 import { Bar } from 'react-chartjs-2'
-import { Link } from 'react-router'
+import { Link } from 'shared'
 import { usePersonalization } from 'shared'
 import type { WidgetConfig } from 'shared'
 import tinycolor from 'tinycolor2'
