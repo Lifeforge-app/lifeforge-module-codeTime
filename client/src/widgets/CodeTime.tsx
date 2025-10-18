@@ -1,6 +1,13 @@
 import forgeAPI from '@/utils/forgeAPI'
 import { useQuery } from '@tanstack/react-query'
-import type { ChartOptions, ScriptableContext } from 'chart.js'
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  type ChartOptions,
+  LinearScale,
+  type ScriptableContext
+} from 'chart.js'
 import dayjs, { Dayjs } from 'dayjs'
 import {
   Button,
@@ -15,6 +22,8 @@ import { Link } from 'react-router'
 import { usePersonalization } from 'shared'
 import type { WidgetConfig } from 'shared'
 import tinycolor from 'tinycolor2'
+
+ChartJS.register(LinearScale, CategoryScale, BarElement)
 
 const getDatesBetween = (start: Dayjs, end: Dayjs): Dayjs[] => {
   if (!start.isValid() || !end.isValid() || start.isAfter(end, 'day')) {
@@ -87,7 +96,7 @@ const chartOptions: ChartOptions = {
 }
 
 const CodeTime = () => {
-const dataQuery = useQuery(forgeAPI['codeTime'].getEachDay.queryOptions())
+  const dataQuery = useQuery(forgeAPI['codeTime'].getEachDay.queryOptions())
 
   const { derivedThemeColor: themeColor } = usePersonalization()
 
