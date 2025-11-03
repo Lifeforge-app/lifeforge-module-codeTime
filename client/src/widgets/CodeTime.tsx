@@ -162,9 +162,9 @@ const CodeTime = () => {
       return (
         <EmptyStateScreen
           smaller
-          icon="tabler:database-off"
+          icon="tabler:code-off"
           name="data"
-          namespace="apps.dashboard"
+          namespace="apps.codeTime"
           tKey="widgets.codeTime"
         />
       )
