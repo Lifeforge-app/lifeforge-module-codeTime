@@ -184,6 +184,7 @@ const CodeTime = () => {
         />
       }
       icon="tabler:chart-line"
+      namespace="apps.codeTime"
       title="Code Time"
     >
       <div className="flex-1">
