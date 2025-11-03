@@ -270,6 +270,30 @@ const getEachDay = forgeController
     }))
   })
 
+const getTimeDistribution = forgeController
+  .query()
+  .description('Get time distribution')
+  .input({})
+  .callback(async ({ pb }) => {
+    const data = await pb.getFullList
+      .collection('code_time__daily_entries')
+      .execute()
+
+    const hourlyData = data.map(item => item.hourly || {})
+
+    const distribution: { [key: string]: number } = Object.fromEntries(
+      Array.from({ length: 24 }, (_, i) => [i.toString(), 0])
+    )
+
+    for (const item of hourlyData) {
+      for (const hour in item) {
+        distribution[hour] += item[hour]
+      }
+    }
+
+    return distribution
+  })
+
 const getUserMinutes = forgeController
   .query()
   .noAuth()
@@ -446,6 +470,7 @@ export default forgeRouter({
   getTopProjects,
   getTopLanguages,
   getEachDay,
+  getTimeDistribution,
   user: {
     minutes: getUserMinutes
   },
