@@ -13,7 +13,7 @@ function CodeTimeStatistics() {
   return (
     <WithQueryData controller={forgeAPI['codeTime'].getStatistics}>
       {stats => (
-        <div className="space-y-3">
+        <div className="col-span-full space-y-3">
           <div className="flex-between component-bg shadow-custom w-full flex-col gap-6 rounded-lg p-3 pb-6 sm:flex-row sm:p-6">
             <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
               <div className="shadow-custom component-bg-lighter bg-bg-100 flex rounded-lg p-2 sm:p-4">

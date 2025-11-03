@@ -18,7 +18,6 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
 
   return (
     <DashboardItem
-      className="h-min"
       componentBesideTitle={
         <IntervalSelector
           className="hidden md:flex"

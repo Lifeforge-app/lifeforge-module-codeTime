@@ -147,7 +147,6 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
 
   return (
     <DashboardItem
-      className="h-min"
       componentBesideTitle={
         <IntervalSelector
           className="hidden md:flex"
@@ -171,7 +170,7 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
         options={['7 days', '30 days']}
         setLastFor={setLastFor}
       />
-      <div className="h-96 w-full">
+      <div className="size-full">
         <WithQuery query={dataQuery}>
           {data =>
             data.length > 0 ? (

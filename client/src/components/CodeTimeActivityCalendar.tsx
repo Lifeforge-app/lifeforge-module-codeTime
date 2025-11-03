@@ -30,7 +30,7 @@ function CodeTimeActivityCalendar() {
 
   return (
     <DashboardItem
-      className="h-min"
+      className="col-span-full h-min"
       icon="tabler:activity"
       namespace="apps.codeTime"
       title="activitiesCalendar"

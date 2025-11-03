@@ -1,5 +1,6 @@
 import { ContextMenuItem, ModuleHeader } from 'lifeforge-ui'
 
+import CoddeTimeDailyHourTrendChart from './components/CoddeTimeDailyHourTrendChart'
 import CodeTimeActivityCalendar from './components/CodeTimeActivityCalendar'
 import CodeTimeStatistics from './components/CodeTimeStatistics'
 import CodeTimeTimeChart from './components/CodeTimeTimeChart'
@@ -21,7 +22,7 @@ export default function CodeTime() {
           )
         }}
       />
-      <div className="mt-6 mb-12 min-h-0 w-full space-y-3">
+      <div className="mb-12 grid min-h-0 w-full grid-cols-1 gap-3 lg:grid-cols-2">
         <CodeTimeStatistics />
         <CodeTimeActivityCalendar />
         {['projects', 'languages'].map(type => (
@@ -36,6 +37,7 @@ export default function CodeTime() {
             />
           </>
         ))}
+        <CoddeTimeDailyHourTrendChart />
       </div>
     </>
   )
