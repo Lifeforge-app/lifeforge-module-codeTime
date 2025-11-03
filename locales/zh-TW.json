@@ -15,7 +15,17 @@
     "projects": "最常參與的專案",
     "projectsTimeGraph": "專案時間圖表",
     "languages": "最常使用的語言",
-    "languagesTimeGraph": "語言時間圖表"
+    "languagesTimeGraph": "語言時間圖表",
+    "codeTime": {
+      "title": "編碼時間",
+      "description": "追蹤並視覺化您的編碼活動。",
+      "empty": {
+        "data": {
+          "title": "沒有數據",
+          "description": "沒有找到任何編碼活動。"
+        }
+      }
+    }
   },
   "labels": {
     "inThePast": "過去"

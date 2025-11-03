@@ -15,7 +15,17 @@
     "projects": "Projek Teratas Yang Dikerjakan",
     "projectsTimeGraph": "Graf Masa Projek",
     "languages": "Bahasa Teratas Yang Digunakan",
-    "languagesTimeGraph": "Graf Masa Bahasa"
+    "languagesTimeGraph": "Graf Masa Bahasa",
+    "codeTime": {
+      "title": "Masa Kod",
+      "description": "Jejak dan visualkan aktiviti pengkodan anda.",
+      "empty": {
+        "data": {
+          "title": "Tiada Data",
+          "description": "Tiada aktiviti pengkodan ditemui."
+        }
+      }
+    }
   },
   "labels": {
     "inThePast": "Pada Masa Lalu"
