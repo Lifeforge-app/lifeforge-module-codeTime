@@ -9,7 +9,12 @@ import { default as _getStatistics } from './utils/statistics'
 
 const getActivities = forgeController
   .query()
-  .description('Get activities by year')
+  .description({
+    en: 'Get coding activity calendar by year',
+    ms: 'Dapatkan kalendar aktiviti pengekodan mengikut tahun',
+    'zh-CN': '按年份获取编码活动日历',
+    'zh-TW': '按年份獲取編碼活動日曆'
+  })
   .input({
     query: z.object({
       year: z
@@ -98,13 +103,23 @@ const getActivities = forgeController
 
 const getStatistics = forgeController
   .query()
-  .description('Get code time statistics')
+  .description({
+    en: 'Get overall coding statistics',
+    ms: 'Dapatkan statistik pengekodan keseluruhan',
+    'zh-CN': '获取整体编码统计',
+    'zh-TW': '獲取整體編碼統計'
+  })
   .input({})
   .callback(({ pb }) => _getStatistics(pb))
 
 const getLastXDays = forgeController
   .query()
-  .description('Get last X days of code time data')
+  .description({
+    en: 'Get coding data for last X days',
+    ms: 'Dapatkan data pengekodan untuk X hari terakhir',
+    'zh-CN': '获取最近 X 天的编码数据',
+    'zh-TW': '獲取最近 X 天的編碼數據'
+  })
   .input({
     query: z.object({
       days: z.string().transform(val => parseInt(val, 10))
@@ -133,7 +148,12 @@ const getLastXDays = forgeController
 
 const getTopProjects = forgeController
   .query()
-  .description('Get projects statistics')
+  .description({
+    en: 'Get top projects by time spent',
+    ms: 'Dapatkan projek teratas mengikut masa digunakan',
+    'zh-CN': '按花费时间获取热门项目',
+    'zh-TW': '按花費時間獲取熱門專案'
+  })
   .input({
     query: z.object({
       last: z.enum(['24 hours', '7 days', '30 days']).default('7 days')
@@ -183,7 +203,12 @@ const getTopProjects = forgeController
 
 const getTopLanguages = forgeController
   .query()
-  .description('Get languages statistics')
+  .description({
+    en: 'Get top languages by usage',
+    ms: 'Dapatkan bahasa teratas mengikut penggunaan',
+    'zh-CN': '按使用量获取热门编程语言',
+    'zh-TW': '按使用量獲取熱門程式語言'
+  })
   .input({
     query: z.object({
       last: z.enum(['24 hours', '7 days', '30 days']).default('7 days')
@@ -233,7 +258,12 @@ const getTopLanguages = forgeController
 
 const getEachDay = forgeController
   .query()
-  .description('Get each day code time data')
+  .description({
+    en: 'Get daily coding time breakdown',
+    ms: 'Dapatkan pecahan masa pengekodan harian',
+    'zh-CN': '获取每日编码时间明细',
+    'zh-TW': '獲取每日編碼時間明細'
+  })
   .input({})
   .callback(async ({ pb }) => {
     const lastDay = moment().format('YYYY-MM-DD')
@@ -272,7 +302,12 @@ const getEachDay = forgeController
 
 const getTimeDistribution = forgeController
   .query()
-  .description('Get time distribution')
+  .description({
+    en: 'Get hourly coding time distribution',
+    ms: 'Dapatkan taburan masa pengekodan mengikut jam',
+    'zh-CN': '获取每小时编码时间分布',
+    'zh-TW': '獲取每小時編碼時間分佈'
+  })
   .input({})
   .callback(async ({ pb }) => {
     const data = await pb.getFullList
@@ -297,7 +332,12 @@ const getTimeDistribution = forgeController
 const getUserMinutes = forgeController
   .query()
   .noAuth()
-  .description('Get user minutes')
+  .description({
+    en: 'Get total coding minutes',
+    ms: 'Dapatkan jumlah minit pengekodan',
+    'zh-CN': '获取编码总分钟数',
+    'zh-TW': '獲取編碼總分鐘數'
+  })
   .input({
     query: z.object({
       minutes: z.string().transform(val => parseInt(val, 10))
@@ -325,7 +365,12 @@ const getUserMinutes = forgeController
 const eventLog = forgeController
   .mutation()
   .noAuth()
-  .description('Log a code time event')
+  .description({
+    en: 'Record a coding activity event',
+    ms: 'Rakam peristiwa aktiviti pengekodan',
+    'zh-CN': '记录编码活动事件',
+    'zh-TW': '記錄編碼活動事件'
+  })
   .input({
     body: z.object({}).passthrough()
   })
@@ -429,7 +474,12 @@ const eventLog = forgeController
 const readme = forgeController
   .query()
   .noAuth()
-  .description('Get readme image')
+  .description({
+    en: 'Generate README stats image',
+    ms: 'Jana imej statistik README',
+    'zh-CN': '生成 README 统计图片',
+    'zh-TW': '生成 README 統計圖片'
+  })
   .input({})
   .noDefaultResponse()
   .callback(async ({ pb, res }) => {
