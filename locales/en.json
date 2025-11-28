@@ -16,6 +16,7 @@
     "projectsTimeGraph": "Projects Time Graph",
     "languages": "Top Languages Used",
     "languagesTimeGraph": "Languages Time Graph",
+    "dailyHourTrend": "Daily Hourly Trend",
     "codeTime": {
       "title": "Code Time",
       "description": "Track and visualize your coding activities.",

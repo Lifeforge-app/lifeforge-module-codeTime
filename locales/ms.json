@@ -16,6 +16,7 @@
     "projectsTimeGraph": "Graf Masa Projek",
     "languages": "Bahasa Teratas Yang Digunakan",
     "languagesTimeGraph": "Graf Masa Bahasa",
+    "dailyHourTrend": "Trend Jam Harian",
     "codeTime": {
       "title": "Masa Kod",
       "description": "Jejak dan visualkan aktiviti pengkodan anda.",

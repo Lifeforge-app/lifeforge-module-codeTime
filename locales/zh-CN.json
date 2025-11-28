@@ -16,6 +16,7 @@
     "projectsTimeGraph": "项目时间图表",
     "languages": "最常使用的语言",
     "languagesTimeGraph": "语言时间图表",
+    "dailyHourTrend": "每日小时趋势",
     "codeTime": {
       "title": "编码时间",
       "description": "追踪并视觉化您的编码活动。",
