@@ -1,11 +1,6 @@
 import forgeAPI from '@/utils/forgeAPI'
 import clsx from 'clsx'
-import {
-  DashboardItem,
-  EmptyStateScreen,
-  ItemWrapper,
-  WithQueryData
-} from 'lifeforge-ui'
+import { Card, EmptyStateScreen, Widget, WithQueryData } from 'lifeforge-ui'
 import { useState } from 'react'
 
 import HoursAndMinutesFromSeconds from './HoursAndMinutesFromSeconds'
@@ -17,8 +12,8 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
   )
 
   return (
-    <DashboardItem
-      componentBesideTitle={
+    <Widget
+      actionComponent={
         <IntervalSelector
           className="hidden md:flex"
           lastFor={lastFor}
@@ -90,7 +85,7 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
                   Object.entries(topEntries)
                     .slice(0, 5)
                     .map(([key, value], index) => (
-                      <ItemWrapper
+                      <Card
                         key={key}
                         className="flex-between component-bg-lighter flex-col gap-8 sm:flex-row"
                       >
@@ -112,20 +107,22 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
                         <div className="shrink-0 text-3xl font-semibold">
                           <HoursAndMinutesFromSeconds seconds={value} />
                         </div>
-                      </ItemWrapper>
+                      </Card>
                     ))}
               </ul>
             </>
           ) : (
             <EmptyStateScreen
               icon="tabler:calendar-off"
-              name="activities"
-              namespace="apps.codeTime"
+              message={{
+                id: 'activities',
+                namespace: 'apps.codeTime'
+              }}
             />
           )
         }
       </WithQueryData>
-    </DashboardItem>
+    </Widget>
   )
 }
 

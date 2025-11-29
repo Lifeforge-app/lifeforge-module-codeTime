@@ -14,7 +14,7 @@ import {
 } from 'chart.js'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
-import { DashboardItem, EmptyStateScreen, WithQuery } from 'lifeforge-ui'
+import { EmptyStateScreen, Widget, WithQuery } from 'lifeforge-ui'
 import { useCallback, useMemo, useState } from 'react'
 import { Chart } from 'react-chartjs-2'
 import { usePersonalization } from 'shared'
@@ -146,8 +146,8 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
   )
 
   return (
-    <DashboardItem
-      componentBesideTitle={
+    <Widget
+      actionComponent={
         <IntervalSelector
           className="hidden md:flex"
           lastFor={lastFor}
@@ -224,14 +224,16 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
             ) : (
               <EmptyStateScreen
                 icon="tabler:calendar-off"
-                name="activities"
-                namespace="apps.codeTime"
+                message={{
+                  id: 'activities',
+                  namespace: 'apps.codeTime'
+                }}
               />
             )
           }
         </WithQuery>
       </div>
-    </DashboardItem>
+    </Widget>
   )
 }
 

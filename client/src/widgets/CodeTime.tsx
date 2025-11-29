@@ -11,9 +11,9 @@ import {
 import dayjs, { Dayjs } from 'dayjs'
 import {
   Button,
-  DashboardItem,
   EmptyStateScreen,
   LoadingScreen,
+  Widget,
   WithQuery
 } from 'lifeforge-ui'
 import { useMemo } from 'react'
@@ -163,9 +163,11 @@ const CodeTime = () => {
         <EmptyStateScreen
           smaller
           icon="tabler:code-off"
-          name="data"
-          namespace="apps.codeTime"
-          tKey="widgets.codeTime"
+          message={{
+            id: 'data',
+            namespace: 'apps.codeTime',
+            tKey: 'widgets.codeTime'
+          }}
         />
       )
 
@@ -173,8 +175,8 @@ const CodeTime = () => {
   }
 
   return (
-    <DashboardItem
-      componentBesideTitle={
+    <Widget
+      actionComponent={
         <Button
           as={Link}
           className="p-2!"
@@ -190,7 +192,7 @@ const CodeTime = () => {
       <div className="flex-1">
         <WithQuery query={dataQuery}>{() => <>{renderContent()}</>}</WithQuery>
       </div>
-    </DashboardItem>
+    </Widget>
   )
 }
 

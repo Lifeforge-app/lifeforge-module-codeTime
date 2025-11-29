@@ -25,7 +25,7 @@ function IntervalSelector<T extends string>({
           <span>{`${lastFor.split(' ')[0]} ${t(`units.${lastFor.split(' ')[1].toLowerCase()}`)}`}</span>
         }
         className="w-full! md:w-48!"
-        setValue={setLastFor}
+        onChange={setLastFor}
         value={lastFor}
       >
         {options.map((last, index) => (

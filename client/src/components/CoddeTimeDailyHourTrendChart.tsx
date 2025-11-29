@@ -1,7 +1,7 @@
 import forgeAPI from '@/utils/forgeAPI'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import { DashboardItem } from 'lifeforge-ui'
+import { Widget } from 'lifeforge-ui'
 import { useMemo } from 'react'
 import { Chart } from 'react-chartjs-2'
 import { usePersonalization } from 'shared'
@@ -52,7 +52,7 @@ function CoddeTimeDailyHourTrendChart() {
   )
 
   return (
-    <DashboardItem
+    <Widget
       className="col-span-full row-span-1"
       icon="tabler:hourglass"
       namespace="apps.codeTime"
@@ -143,7 +143,7 @@ function CoddeTimeDailyHourTrendChart() {
           />
         </div>
       )}
-    </DashboardItem>
+    </Widget>
   )
 }
 

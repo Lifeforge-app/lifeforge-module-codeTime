@@ -2,10 +2,10 @@ import forgeAPI from '@/utils/forgeAPI'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import {
-  DashboardItem,
   EmptyStateScreen,
   Listbox,
   ListboxOption,
+  Widget,
   WithQuery
 } from 'lifeforge-ui'
 import { cloneElement, useState } from 'react'
@@ -29,7 +29,7 @@ function CodeTimeActivityCalendar() {
   )
 
   return (
-    <DashboardItem
+    <Widget
       className="col-span-full h-min"
       icon="tabler:activity"
       namespace="apps.codeTime"
@@ -42,8 +42,8 @@ function CodeTimeActivityCalendar() {
               <Listbox
                 buttonContent={<span>{year}</span>}
                 className="md:hidden"
-                setValue={setYear}
                 value={year}
+                onChange={setYear}
               >
                 {Array(new Date().getFullYear() - firstYear + 1)
                   .fill(0)
@@ -137,14 +137,16 @@ function CodeTimeActivityCalendar() {
           ) : (
             <EmptyStateScreen
               icon="tabler:calendar-off"
-              name="activities"
-              namespace="apps.codeTime"
+              message={{
+                id: 'activities',
+                namespace: 'apps.codeTime'
+              }}
             />
           )
         }
       </WithQuery>
       <Tooltip className="z-9999" id="react-tooltip" />
-    </DashboardItem>
+    </Widget>
   )
 }
 
