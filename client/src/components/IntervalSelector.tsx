@@ -24,9 +24,9 @@ function IntervalSelector<T extends string>({
         buttonContent={
           <span>{`${lastFor.split(' ')[0]} ${t(`units.${lastFor.split(' ')[1].toLowerCase()}`)}`}</span>
         }
-        className="w-full! md:w-48!"
-        onChange={setLastFor}
+        className="component-bg-lighter w-full! md:w-48!"
         value={lastFor}
+        onChange={setLastFor}
       >
         {options.map((last, index) => (
           <ListboxOption
