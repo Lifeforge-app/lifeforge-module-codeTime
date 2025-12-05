@@ -332,6 +332,7 @@ const getTimeDistribution = forgeController
 const getUserMinutes = forgeController
   .query()
   .noAuth()
+  .noEncryption()
   .description({
     en: 'Get total coding minutes',
     ms: 'Dapatkan jumlah minit pengekodan',
@@ -365,6 +366,7 @@ const getUserMinutes = forgeController
 const eventLog = forgeController
   .mutation()
   .noAuth()
+  .noEncryption()
   .description({
     en: 'Record a coding activity event',
     ms: 'Rakam peristiwa aktiviti pengekodan',
@@ -474,6 +476,7 @@ const eventLog = forgeController
 const readme = forgeController
   .query()
   .noAuth()
+  .noEncryption()
   .description({
     en: 'Generate README stats image',
     ms: 'Jana imej statistik README',
