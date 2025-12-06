@@ -1,29 +1,26 @@
 import forgeAPI from '@/utils/forgeAPI'
 import { useQuery } from '@tanstack/react-query'
-import {
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  type ChartOptions,
-  LinearScale,
-  type ScriptableContext
-} from 'chart.js'
 import dayjs, { Dayjs } from 'dayjs'
 import {
   Button,
+  Card,
   EmptyStateScreen,
   LoadingScreen,
   Widget,
   WithQuery
 } from 'lifeforge-ui'
 import { useMemo } from 'react'
-import { Bar } from 'react-chartjs-2'
-import { Link } from 'shared'
-import { usePersonalization } from 'shared'
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from 'recharts'
+import { Link, usePersonalization } from 'shared'
 import type { WidgetConfig } from 'shared'
-import tinycolor from 'tinycolor2'
-
-ChartJS.register(LinearScale, CategoryScale, BarElement)
 
 const getDatesBetween = (start: Dayjs, end: Dayjs): Dayjs[] => {
   if (!start.isValid() || !end.isValid() || start.isAfter(end, 'day')) {
@@ -52,53 +49,14 @@ const msToTime = (ms: number): string => {
   return '0 Sec'
 }
 
-const chartOptions: ChartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      callbacks: {
-        labelColor: () => ({
-          borderColor: 'transparent',
-          backgroundColor: 'black'
-        }),
-        label: context => {
-          let label = context.dataset.label || ''
-          if (label) label += ': '
-
-          if (context.parsed.y !== null) {
-            label += msToTime(context.parsed.y * 3600000)
-          }
-
-          return label
-        }
-      },
-      intersect: false
-    }
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
-      ticks: {
-        callback: (label: number | string) =>
-          `${Math.round(parseInt(label.toString()))}h`
-      },
-      grid: { drawOnChartArea: false },
-      border: { color: 'rgba(163, 163, 163, 0.5)' }
-    },
-    x: {
-      grid: { drawOnChartArea: false },
-      border: { color: 'rgba(163, 163, 163, 0.5)' }
-    }
-  },
-  hover: { intersect: false }
-}
-
 const CodeTime = () => {
   const dataQuery = useQuery(forgeAPI['codeTime'].getEachDay.queryOptions())
 
-  const { derivedThemeColor: themeColor } = usePersonalization()
+  const {
+    derivedThemeColor: themeColor,
+    bgTempPalette,
+    derivedTheme
+  } = usePersonalization()
 
   const chartData = useMemo(() => {
     const data = dataQuery.data
@@ -106,59 +64,54 @@ const CodeTime = () => {
     if (dataQuery.isLoading) return 'Loading'
     if (!data || data.length === 0) return 'No data'
 
-    const labels = getDatesBetween(
+    const dates = getDatesBetween(
       dayjs(data[0].date),
       dayjs(data[data.length - 1].date)
-    ).map(date => date.format('DD MMM'))
+    )
 
-    const processedData = labels.map(date => {
-      const day = data.find(
-        d => d.date === dayjs(date, 'DD MMM').format('YYYY-MM-DD')
-      )
+    return dates.map(date => {
+      const dateStr = date.format('YYYY-MM-DD')
 
-      return day ? day.duration / 3600000 : 0
+      const day = data.find(d => d.date === dateStr)
+
+      return {
+        date: date.format('DD MMM'),
+        hours: day ? day.duration / 3600000 : 0
+      }
     })
+  }, [dataQuery.data, dataQuery.isLoading])
 
-    return {
-      labels,
-      datasets: [
-        {
-          label: 'Code time',
-          data: processedData,
-          backgroundColor: (context: ScriptableContext<'line'>) => {
-            const ctx = context.chart.ctx
+  const CustomTooltip = ({
+    active,
+    payload
+  }: {
+    active?: boolean
+    payload?: Array<{ value: number; payload: { date: string } }>
+  }) => {
+    if (active && payload && payload.length) {
+      const hours = payload[0].value
 
-            const gradient = ctx.createLinearGradient(0, 0, 0, 250)
-
-            gradient.addColorStop(
-              0,
-              tinycolor(themeColor).setAlpha(0.5).toRgbString()
-            )
-            gradient.addColorStop(
-              1,
-              tinycolor(themeColor).setAlpha(0).toRgbString()
-            )
-
-            return gradient
-          },
-          fill: 'origin',
-          lineTension: 0.3,
-          borderColor: themeColor,
-          borderWidth: 1,
-          pointBorderColor: 'rgba(0, 0, 0, 0)',
-          pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-          pointHoverBackgroundColor: `${themeColor}80`,
-          pointHoverBorderColor: themeColor,
-          pointHoverBorderWidth: 2,
-          pointHoverRadius: 6
-        }
-      ]
+      return (
+        <Card className="border-bg-200 dark:border-bg-700/50 p-0!">
+          <div className="component-bg-lighter p-4!">
+            <p className="mb-1.5 font-medium">{payload[0].payload.date}</p>
+            <div className="flex items-center gap-2">
+              <span className="text-bg-500">Code time:</span>
+              <span className="font-semibold" style={{ color: themeColor }}>
+                {msToTime(hours * 3600000)}
+              </span>
+            </div>
+          </div>
+        </Card>
+      )
     }
-  }, [dataQuery.data, dataQuery.isLoading, themeColor])
+
+    return null
+  }
 
   const renderContent = () => {
     if (!chartData) return <LoadingScreen />
-    if (chartData === 'No data')
+    if (chartData === 'No data' || chartData === 'Loading')
       return (
         <EmptyStateScreen
           smaller
@@ -171,7 +124,44 @@ const CodeTime = () => {
         />
       )
 
-    return <Bar data={chartData as any} options={chartOptions as any} />
+    return (
+      <ResponsiveContainer height="100%" width="100%">
+        <AreaChart data={chartData}>
+          <defs>
+            <linearGradient id="colorCodeTime" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="5%" stopColor={themeColor} stopOpacity={0.3} />
+              <stop offset="95%" stopColor={themeColor} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <XAxis
+            axisLine={false}
+            dataKey="date"
+            tick={{ fill: 'currentColor', fontSize: 11 }}
+            tickLine={false}
+          />
+          <CartesianGrid
+            stroke={bgTempPalette[derivedTheme === 'dark' ? '700' : '300']}
+            strokeDasharray="3 3"
+            vertical={false}
+          />
+          <YAxis
+            axisLine={false}
+            tick={{ fill: 'currentColor', fontSize: 11 }}
+            tickFormatter={value => `${Math.round(value)}h`}
+            tickLine={false}
+            width={35}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <Area
+            dataKey="hours"
+            fill="url(#colorCodeTime)"
+            stroke={themeColor}
+            strokeWidth={2}
+            type="monotone"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    )
   }
 
   return (
