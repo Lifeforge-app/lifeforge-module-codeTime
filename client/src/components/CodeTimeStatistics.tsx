@@ -11,7 +11,12 @@ function CodeTimeStatistics() {
   const { t } = useTranslation('apps.codeTime')
 
   return (
-    <WithQueryData controller={forgeAPI['codeTime'].getStatistics}>
+    <WithQueryData
+      controller={forgeAPI['codeTime'].getStatistics}
+      queryOptions={{
+        refetchInterval: 60 * 1000
+      }}
+    >
       {stats => (
         <div className="col-span-full space-y-3">
           <div className="flex-between component-bg shadow-custom w-full flex-col gap-6 rounded-lg p-3 pb-6 sm:flex-row sm:p-6">
@@ -22,7 +27,7 @@ function CodeTimeStatistics() {
                   icon="tabler:calendar"
                 />
               </div>
-              <div className="text-bg-500 whitespace-nowrap text-lg font-medium sm:text-xl">
+              <div className="text-bg-500 text-lg font-medium whitespace-nowrap sm:text-xl">
                 {t('statisticType.timeSpentToday')}
               </div>
             </div>
@@ -58,11 +63,11 @@ function CodeTimeStatistics() {
                         }
                       />
                     </div>
-                    <div className="text-bg-500 whitespace-nowrap text-lg">
+                    <div className="text-bg-500 text-lg whitespace-nowrap">
                       {t(`statisticType.${_.camelCase(key)}`)}
                     </div>
                   </div>
-                  <div className="mt-2 whitespace-nowrap text-4xl font-semibold">
+                  <div className="mt-2 text-4xl font-semibold whitespace-nowrap">
                     {index < 3 ? (
                       <HoursAndMinutesFromSeconds seconds={value} />
                     ) : (

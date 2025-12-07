@@ -50,7 +50,11 @@ const msToTime = (ms: number): string => {
 }
 
 const CodeTime = () => {
-  const dataQuery = useQuery(forgeAPI['codeTime'].getEachDay.queryOptions())
+  const dataQuery = useQuery(
+    forgeAPI['codeTime'].getEachDay.queryOptions({
+      refetchInterval: 1000 * 60
+    })
+  )
 
   const {
     derivedThemeColor: themeColor,

@@ -32,7 +32,9 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
       .input({
         days: lastFor.toString()
       })
-      .queryOptions()
+      .queryOptions({
+        refetchInterval: 60 * 1000
+      })
   )
 
   const chartData = useMemo(() => {

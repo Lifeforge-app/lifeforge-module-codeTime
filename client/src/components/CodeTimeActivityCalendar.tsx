@@ -25,7 +25,9 @@ function CodeTimeActivityCalendar() {
       .input({
         year: year.toString()
       })
-      .queryOptions()
+      .queryOptions({
+        refetchInterval: 60 * 1000
+      })
   )
 
   return (

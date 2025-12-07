@@ -42,6 +42,9 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
         ].input({
           last: lastFor
         })}
+        queryOptions={{
+          refetchInterval: 60 * 1000
+        }}
       >
         {topEntries =>
           Object.keys(topEntries).length > 0 ? (
