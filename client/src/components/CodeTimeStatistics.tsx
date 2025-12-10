@@ -19,7 +19,7 @@ function CodeTimeStatistics() {
     >
       {stats => (
         <div className="col-span-full space-y-3">
-          <div className="flex-between component-bg shadow-custom w-full flex-col gap-6 rounded-lg p-3 pb-6 sm:flex-row sm:p-6">
+          <div className="flex-between border-bg-500/20 component-bg shadow-custom w-full flex-col gap-6 rounded-lg p-3 pb-6 in-[.bordered]:border-2 sm:flex-row sm:p-6">
             <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
               <div className="shadow-custom component-bg-lighter bg-bg-100 flex rounded-lg p-2 sm:p-4">
                 <Icon
@@ -41,7 +41,7 @@ function CodeTimeStatistics() {
               .map(([key, value], index) => (
                 <div
                   key={key}
-                  className="flex-between shadow-custom component-bg flex w-full flex-col gap-2 rounded-lg p-3 pb-6 sm:items-start sm:p-6"
+                  className="flex-between border-bg-500/20 shadow-custom component-bg flex w-full flex-col gap-2 rounded-lg p-3 pb-6 in-[.bordered]:border-2 sm:items-start sm:p-6"
                 >
                   <div className="flex w-full flex-row items-center gap-2 sm:flex-col sm:items-start">
                     <div className="shadow-custom component-bg-lighter bg-bg-100 flex rounded-lg p-2 sm:p-4">
