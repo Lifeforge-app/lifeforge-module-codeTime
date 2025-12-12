@@ -11,7 +11,7 @@ import {
 import { cloneElement, useState } from 'react'
 import { ActivityCalendar } from 'react-activity-calendar'
 import { Tooltip } from 'react-tooltip'
-import { usePersonalization } from 'shared'
+import { anyColorToHex, usePersonalization } from 'shared'
 
 const target = forgeAPI['codeTime'].getActivities
 
@@ -109,7 +109,7 @@ function CodeTimeActivityCalendar() {
                         derivedTheme === 'dark'
                           ? 'rgb(38, 38, 38)'
                           : 'rgb(229, 229, 229)',
-                        themeColor
+                        anyColorToHex(themeColor) || '#a9d066'
                       ]
                     }}
                   />
