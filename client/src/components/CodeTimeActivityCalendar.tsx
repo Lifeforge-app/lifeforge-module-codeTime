@@ -63,6 +63,7 @@ function CodeTimeActivityCalendar() {
                     showWeekdayLabels
                     blockMargin={5}
                     blockSize={16}
+                    colorScheme="dark"
                     data={activities}
                     labels={{
                       totalCount: `${
