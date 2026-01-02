@@ -5,7 +5,7 @@ export default {
   name: 'Code Time',
   icon: 'tabler:code',
   routes: {
-    '/': lazy(() => import('.'))
+    '/': lazy(() => import('@'))
   },
   category: 'Productivity'
 } satisfies ModuleConfig
