@@ -1,7 +1,13 @@
 {
-  "name": "code-time",
-  "version": "dev. 25w41",
+  "name": "@lifeforge/lifeforge--code-time",
+  "displayName": "Code Time",
+  "version": "0.0.1",
+  "author": "Melvin Chia <melvinchia623600@gmail.com>",
   "description": "See how much code magic you have created.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lifeforge-app/lifeforge-module-codeTime.git"
+  },
   "scripts": {
     "types": "cd client && bun tsc"
   },
@@ -30,5 +36,17 @@
     "@types/lodash": "^4.17.21",
     "@types/react": "^19.2.0",
     "@types/tinycolor2": "^1.4.6"
+  },
+  "exports": {
+    "./server": "./server/index.ts",
+    "./manifest": {
+      "types": "./manifest.d.ts",
+      "default": "./manifest.ts"
+    },
+    "./server/schema": "./server/schema.ts"
+  },
+  "lifeforge": {
+    "icon": "tabler:code",
+    "category": "Productivity"
   }
 }
