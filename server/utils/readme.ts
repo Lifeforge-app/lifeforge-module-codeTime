@@ -1,5 +1,6 @@
-import { PBService } from '@functions/database'
 import moment from 'moment'
+
+import { PBService } from '@functions/database'
 
 import getStatistics from './statistics'
 
@@ -9,7 +10,7 @@ export default async function getReadmeHTML(pb: PBService) {
   const today = moment().format('YYYY-MM-DD')
 
   const todayRecord = await pb.getList
-    .collection('code_time__daily_entries')
+    .collection('codeTime__daily_entries')
     .page(1)
     .perPage(1)
     .filter([

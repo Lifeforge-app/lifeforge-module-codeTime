@@ -1,8 +1,9 @@
-import { forgeController, forgeRouter } from '@functions/routes'
-import { ClientError } from '@functions/routes/utils/response'
 import moment from 'moment'
 import puppeteer from 'puppeteer-core'
 import z from 'zod'
+
+import { forgeController, forgeRouter } from '@functions/routes'
+import { ClientError } from '@functions/routes/utils/response'
 
 import getReadmeHTML from './utils/readme'
 import { default as _getStatistics } from './utils/statistics'
@@ -27,7 +28,7 @@ const getActivities = forgeController
     const yearValue = Number(year) || new Date().getFullYear()
 
     const data = await pb.getFullList
-      .collection('code_time__daily_entries')
+      .collection('codeTime__daily_entries')
       .filter([
         {
           field: 'date',
@@ -89,7 +90,7 @@ const getActivities = forgeController
     }
 
     const firstRecordEver = await pb.getList
-      .collection('code_time__daily_entries')
+      .collection('codeTime__daily_entries')
       .page(1)
       .perPage(1)
       .sort(['date'])
@@ -133,7 +134,7 @@ const getLastXDays = forgeController
     const lastXDays = moment().subtract(days, 'days').format('YYYY-MM-DD')
 
     const data = await pb.getFullList
-      .collection('code_time__daily_entries')
+      .collection('codeTime__daily_entries')
       .filter([
         {
           field: 'date',
@@ -171,7 +172,7 @@ const getTopProjects = forgeController
       .format('YYYY-MM-DD')
 
     const data = await pb.getFullList
-      .collection('code_time__daily_entries')
+      .collection('codeTime__daily_entries')
       .filter([
         {
           field: 'date',
@@ -226,7 +227,7 @@ const getTopLanguages = forgeController
       .format('YYYY-MM-DD')
 
     const data = await pb.getFullList
-      .collection('code_time__daily_entries')
+      .collection('codeTime__daily_entries')
       .filter([
         {
           field: 'date',
@@ -271,7 +272,7 @@ const getEachDay = forgeController
     const firstDay = moment().subtract(30, 'days').format('YYYY-MM-DD')
 
     const data = await pb.getFullList
-      .collection('code_time__daily_entries')
+      .collection('codeTime__daily_entries')
       .filter([
         {
           field: 'date',
@@ -311,7 +312,7 @@ const getTimeDistribution = forgeController
   .input({})
   .callback(async ({ pb }) => {
     const data = await pb.getFullList
-      .collection('code_time__daily_entries')
+      .collection('codeTime__daily_entries')
       .execute()
 
     const hourlyData = data.map(item => item.hourly || {})
@@ -348,7 +349,7 @@ const getUserMinutes = forgeController
     const minTime = moment().subtract(minutes, 'minutes').format('YYYY-MM-DD')
 
     const items = await pb.getFullList
-      .collection('code_time__daily_entries')
+      .collection('codeTime__daily_entries')
       .filter([
         {
           field: 'date',
@@ -382,7 +383,7 @@ const eventLog = forgeController
     const date = moment(data.eventTime as string).format('YYYY-MM-DD')
 
     const lastData = await pb.getList
-      .collection('code_time__daily_entries')
+      .collection('codeTime__daily_entries')
       .page(1)
       .perPage(1)
       .filter([
@@ -396,7 +397,7 @@ const eventLog = forgeController
 
     if (lastData.totalItems === 0) {
       await pb.create
-        .collection('code_time__daily_entries')
+        .collection('codeTime__daily_entries')
         .data({
           date,
           projects: {
@@ -457,7 +458,7 @@ const eventLog = forgeController
       }
 
       await pb.update
-        .collection('code_time__daily_entries')
+        .collection('codeTime__daily_entries')
         .id(lastRecord.id)
         .data({
           projects,

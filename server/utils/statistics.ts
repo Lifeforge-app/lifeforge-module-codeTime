@@ -1,11 +1,12 @@
-import { PBService } from '@functions/database'
 import moment from 'moment'
+
+import { PBService } from '@functions/database'
 
 import { getDates } from './dates'
 
 export default async (pb: PBService) => {
   const everything = await pb.getFullList
-    .collection('code_time__daily_entries')
+    .collection('codeTime__daily_entries')
     .sort(['date'])
     .execute()
 
