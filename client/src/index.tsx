@@ -5,6 +5,7 @@ import CodeTimeActivityCalendar from './components/CodeTimeActivityCalendar'
 import CodeTimeStatistics from './components/CodeTimeStatistics'
 import CodeTimeTimeChart from './components/CodeTimeTimeChart'
 import CodeTimeTopEntries from './components/CodeTimeTopEntries'
+import './index.css'
 
 export default function CodeTime() {
   return (
