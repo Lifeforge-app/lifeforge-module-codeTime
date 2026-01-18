@@ -1,21 +1,18 @@
-import moment from 'moment'
+import { ClientError, forgeRouter } from '@lifeforge/server-utils'
+import { createForge } from '@lifeforge/server-utils'
+import dayjs from 'dayjs'
 import puppeteer from 'puppeteer-core'
 import z from 'zod'
 
-import { forgeController, forgeRouter } from '@functions/routes'
-import { ClientError } from '@functions/routes/utils/response'
-
+import schema from './schema'
 import getReadmeHTML from './utils/readme'
 import { default as _getStatistics } from './utils/statistics'
 
-const getActivities = forgeController
+const forge = createForge(schema)
+
+const getActivities = forge
   .query()
-  .description({
-    en: 'Get coding activity calendar by year',
-    ms: 'Dapatkan kalendar aktiviti pengekodan mengikut tahun',
-    'zh-CN': '按年份获取编码活动日历',
-    'zh-TW': '按年份獲取編碼活動日曆'
-  })
+  .description('Get coding activity calendar by year')
   .input({
     query: z.object({
       year: z
@@ -28,7 +25,7 @@ const getActivities = forgeController
     const yearValue = Number(year) || new Date().getFullYear()
 
     const data = await pb.getFullList
-      .collection('codeTime__daily_entries')
+      .collection('daily_entries')
       .filter([
         {
           field: 'date',
@@ -49,7 +46,7 @@ const getActivities = forgeController
 
     const groupByDate = data.reduce(
       (acc, item) => {
-        const dateKey = moment(item.date).format('YYYY-MM-DD')
+        const dateKey = dayjs(item.date).format('YYYY-MM-DD')
 
         acc[dateKey] = item.total_minutes
 
@@ -90,7 +87,7 @@ const getActivities = forgeController
     }
 
     const firstRecordEver = await pb.getList
-      .collection('codeTime__daily_entries')
+      .collection('daily_entries')
       .page(1)
       .perPage(1)
       .sort(['date'])
@@ -102,25 +99,15 @@ const getActivities = forgeController
     }
   })
 
-const getStatistics = forgeController
+const getStatistics = forge
   .query()
-  .description({
-    en: 'Get overall coding statistics',
-    ms: 'Dapatkan statistik pengekodan keseluruhan',
-    'zh-CN': '获取整体编码统计',
-    'zh-TW': '獲取整體編碼統計'
-  })
+  .description('Get overall coding statistics')
   .input({})
   .callback(({ pb }) => _getStatistics(pb))
 
-const getLastXDays = forgeController
+const getLastXDays = forge
   .query()
-  .description({
-    en: 'Get coding data for last X days',
-    ms: 'Dapatkan data pengekodan untuk X hari terakhir',
-    'zh-CN': '获取最近 X 天的编码数据',
-    'zh-TW': '獲取最近 X 天的編碼數據'
-  })
+  .description('Get coding data for last X days')
   .input({
     query: z.object({
       days: z.string().transform(val => parseInt(val, 10))
@@ -131,10 +118,10 @@ const getLastXDays = forgeController
       throw new ClientError('days must be less than or equal to 30')
     }
 
-    const lastXDays = moment().subtract(days, 'days').format('YYYY-MM-DD')
+    const lastXDays = dayjs().subtract(days, 'days').format('YYYY-MM-DD')
 
     const data = await pb.getFullList
-      .collection('codeTime__daily_entries')
+      .collection('daily_entries')
       .filter([
         {
           field: 'date',
@@ -147,14 +134,9 @@ const getLastXDays = forgeController
     return data
   })
 
-const getTopProjects = forgeController
+const getTopProjects = forge
   .query()
-  .description({
-    en: 'Get top projects by time spent',
-    ms: 'Dapatkan projek teratas mengikut masa digunakan',
-    'zh-CN': '按花费时间获取热门项目',
-    'zh-TW': '按花費時間獲取熱門專案'
-  })
+  .description('Get top projects by time spent')
   .input({
     query: z.object({
       last: z.enum(['24 hours', '7 days', '30 days']).default('7 days')
@@ -167,12 +149,12 @@ const getTopProjects = forgeController
       '30 days': [30, 'days']
     }[last]!
 
-    const date = moment()
-      .subtract(params[0], params[1] as moment.unitOfTime.DurationConstructor)
+    const date = dayjs()
+      .subtract(Number(params[0]), params[1] as dayjs.ManipulateType)
       .format('YYYY-MM-DD')
 
     const data = await pb.getFullList
-      .collection('codeTime__daily_entries')
+      .collection('daily_entries')
       .filter([
         {
           field: 'date',
@@ -202,14 +184,9 @@ const getTopProjects = forgeController
     return groupByProject
   })
 
-const getTopLanguages = forgeController
+const getTopLanguages = forge
   .query()
-  .description({
-    en: 'Get top languages by usage',
-    ms: 'Dapatkan bahasa teratas mengikut penggunaan',
-    'zh-CN': '按使用量获取热门编程语言',
-    'zh-TW': '按使用量獲取熱門程式語言'
-  })
+  .description('Get top languages by usage')
   .input({
     query: z.object({
       last: z.enum(['24 hours', '7 days', '30 days']).default('7 days')
@@ -222,12 +199,12 @@ const getTopLanguages = forgeController
       '30 days': [30, 'days']
     }[last]!
 
-    const date = moment()
-      .subtract(params[0], params[1] as moment.unitOfTime.DurationConstructor)
+    const date = dayjs()
+      .subtract(Number(params[0]), params[1] as dayjs.ManipulateType)
       .format('YYYY-MM-DD')
 
     const data = await pb.getFullList
-      .collection('codeTime__daily_entries')
+      .collection('daily_entries')
       .filter([
         {
           field: 'date',
@@ -257,22 +234,17 @@ const getTopLanguages = forgeController
     return groupByLanguage
   })
 
-const getEachDay = forgeController
+const getEachDay = forge
   .query()
-  .description({
-    en: 'Get daily coding time breakdown',
-    ms: 'Dapatkan pecahan masa pengekodan harian',
-    'zh-CN': '获取每日编码时间明细',
-    'zh-TW': '獲取每日編碼時間明細'
-  })
+  .description('Get daily coding time breakdown')
   .input({})
   .callback(async ({ pb }) => {
-    const lastDay = moment().format('YYYY-MM-DD')
+    const lastDay = dayjs().format('YYYY-MM-DD')
 
-    const firstDay = moment().subtract(30, 'days').format('YYYY-MM-DD')
+    const firstDay = dayjs().subtract(30, 'days').format('YYYY-MM-DD')
 
     const data = await pb.getFullList
-      .collection('codeTime__daily_entries')
+      .collection('daily_entries')
       .filter([
         {
           field: 'date',
@@ -290,7 +262,7 @@ const getEachDay = forgeController
     const groupByDate: { [key: string]: number } = {}
 
     for (const item of data) {
-      const dateKey = moment(item.date).format('YYYY-MM-DD')
+      const dateKey = dayjs(item.date).format('YYYY-MM-DD')
 
       groupByDate[dateKey] = item.total_minutes
     }
@@ -301,19 +273,12 @@ const getEachDay = forgeController
     }))
   })
 
-const getTimeDistribution = forgeController
+const getTimeDistribution = forge
   .query()
-  .description({
-    en: 'Get hourly coding time distribution',
-    ms: 'Dapatkan taburan masa pengekodan mengikut jam',
-    'zh-CN': '获取每小时编码时间分布',
-    'zh-TW': '獲取每小時編碼時間分佈'
-  })
+  .description('Get hourly coding time distribution')
   .input({})
   .callback(async ({ pb }) => {
-    const data = await pb.getFullList
-      .collection('codeTime__daily_entries')
-      .execute()
+    const data = await pb.getFullList.collection('daily_entries').execute()
 
     const hourlyData = data.map(item => item.hourly || {})
 
@@ -330,26 +295,21 @@ const getTimeDistribution = forgeController
     return distribution
   })
 
-const getUserMinutes = forgeController
+const getUserMinutes = forge
   .query()
   .noAuth()
   .noEncryption()
-  .description({
-    en: 'Get total coding minutes',
-    ms: 'Dapatkan jumlah minit pengekodan',
-    'zh-CN': '获取编码总分钟数',
-    'zh-TW': '獲取編碼總分鐘數'
-  })
+  .description('Get total coding minutes')
   .input({
     query: z.object({
       minutes: z.string().transform(val => parseInt(val, 10))
     })
   })
   .callback(async ({ pb, query: { minutes } }) => {
-    const minTime = moment().subtract(minutes, 'minutes').format('YYYY-MM-DD')
+    const minTime = dayjs().subtract(minutes, 'minutes').format('YYYY-MM-DD')
 
     const items = await pb.getFullList
-      .collection('codeTime__daily_entries')
+      .collection('daily_entries')
       .filter([
         {
           field: 'date',
@@ -364,26 +324,21 @@ const getUserMinutes = forgeController
     }
   })
 
-const eventLog = forgeController
+const eventLog = forge
   .mutation()
   .noAuth()
   .noEncryption()
-  .description({
-    en: 'Record a coding activity event',
-    ms: 'Rakam peristiwa aktiviti pengekodan',
-    'zh-CN': '记录编码活动事件',
-    'zh-TW': '記錄編碼活動事件'
-  })
+  .description('Record a coding activity event')
   .input({
     body: z.object({}).passthrough()
   })
   .callback(async ({ pb, body: data }) => {
     data.eventTime = Math.floor(Date.now() / 60000) * 60000
 
-    const date = moment(data.eventTime as string).format('YYYY-MM-DD')
+    const date = dayjs(data.eventTime as string).format('YYYY-MM-DD')
 
     const lastData = await pb.getList
-      .collection('codeTime__daily_entries')
+      .collection('daily_entries')
       .page(1)
       .perPage(1)
       .filter([
@@ -397,7 +352,7 @@ const eventLog = forgeController
 
     if (lastData.totalItems === 0) {
       await pb.create
-        .collection('codeTime__daily_entries')
+        .collection('daily_entries')
         .data({
           date,
           projects: {
@@ -410,7 +365,7 @@ const eventLog = forgeController
             [data.language as string]: 1
           },
           hourly: {
-            [moment(data.eventTime as string).format('H')]: 1
+            [dayjs(data.eventTime as string).format('H')]: 1
           },
           total_minutes: 1,
           last_timestamp: data.eventTime
@@ -449,7 +404,7 @@ const eventLog = forgeController
 
       const hourly = lastRecord.hourly || {}
 
-      const hourKey = moment(data.eventTime as string).format('H')
+      const hourKey = dayjs(data.eventTime as string).format('H')
 
       if (hourly[hourKey]) {
         hourly[hourKey] += 1
@@ -458,7 +413,7 @@ const eventLog = forgeController
       }
 
       await pb.update
-        .collection('codeTime__daily_entries')
+        .collection('daily_entries')
         .id(lastRecord.id)
         .data({
           projects,
@@ -474,16 +429,11 @@ const eventLog = forgeController
     return { status: 'ok', message: 'success' }
   })
 
-const readme = forgeController
+const readme = forge
   .query()
   .noAuth()
   .noEncryption()
-  .description({
-    en: 'Generate README stats image',
-    ms: 'Jana imej statistik README',
-    'zh-CN': '生成 README 统计图片',
-    'zh-TW': '生成 README 統計圖片'
-  })
+  .description('Generate README stats image')
   .input({})
   .noDefaultResponse()
   .callback(async ({ pb, res }) => {

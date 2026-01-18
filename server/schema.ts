@@ -1,6 +1,7 @@
+import { cleanSchemas } from '@lifeforge/server-utils'
 import z from 'zod'
 
-const codeTimeSchemas = {
+export const schemas = {
   daily_entries: {
     schema: z.object({
       date: z.string(),
@@ -110,4 +111,4 @@ const codeTimeSchemas = {
   }
 }
 
-export default codeTimeSchemas
+export default cleanSchemas(schemas)

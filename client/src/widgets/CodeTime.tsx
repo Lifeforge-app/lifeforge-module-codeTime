@@ -1,4 +1,3 @@
-import forgeAPI from '@/utils/forgeAPI'
 import { useQuery } from '@tanstack/react-query'
 import dayjs, { Dayjs } from 'dayjs'
 import {
@@ -21,6 +20,8 @@ import {
 } from 'recharts'
 import { Link, usePersonalization } from 'shared'
 import type { WidgetConfig } from 'shared'
+
+import forgeAPI from '@/utils/forgeAPI'
 
 const getDatesBetween = (start: Dayjs, end: Dayjs): Dayjs[] => {
   if (!start.isValid() || !end.isValid() || start.isAfter(end, 'day')) {
@@ -51,7 +52,7 @@ const msToTime = (ms: number): string => {
 
 const CodeTime = () => {
   const dataQuery = useQuery(
-    forgeAPI['codeTime'].getEachDay.queryOptions({
+    forgeAPI.getEachDay.queryOptions({
       refetchInterval: 1000 * 60
     })
   )

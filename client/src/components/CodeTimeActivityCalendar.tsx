@@ -1,4 +1,3 @@
-import forgeAPI from '@/utils/forgeAPI'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import {
@@ -13,7 +12,9 @@ import { ActivityCalendar } from 'react-activity-calendar'
 import { Tooltip } from 'react-tooltip'
 import { anyColorToHex, usePersonalization } from 'shared'
 
-const target = forgeAPI['codeTime'].getActivities
+import forgeAPI from '@/utils/forgeAPI'
+
+const target = forgeAPI.getActivities
 
 function CodeTimeActivityCalendar() {
   const { derivedTheme, derivedThemeColor: themeColor } = usePersonalization()

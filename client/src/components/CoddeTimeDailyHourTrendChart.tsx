@@ -1,4 +1,3 @@
-import forgeAPI from '@/utils/forgeAPI'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { Widget } from 'lifeforge-ui'
@@ -16,12 +15,14 @@ import {
 } from 'recharts'
 import { usePersonalization } from 'shared'
 
+import forgeAPI from '@/utils/forgeAPI'
+
 function CoddeTimeDailyHourTrendChart() {
   const { derivedThemeColor, bgTempPalette, derivedTheme } =
     usePersonalization()
 
   const hourlyTrendDataQuery = useQuery(
-    forgeAPI.codeTime.getTimeDistribution.queryOptions()
+    forgeAPI.getTimeDistribution.queryOptions()
   )
 
   const currentHour = dayjs().hour()

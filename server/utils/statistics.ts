@@ -1,21 +1,19 @@
-import moment from 'moment'
-
-import { PBService } from '@functions/database'
+import dayjs from 'dayjs'
 
 import { getDates } from './dates'
 
-export default async (pb: PBService) => {
-  const everything = await pb.getFullList
-    .collection('codeTime__daily_entries')
+export default async (pb: any) => {
+  const everything = (await pb.getFullList
+    .collection('daily_entries')
     .sort(['date'])
-    .execute()
+    .execute()) as any[]
 
   let groupByDate: { date: string; count: number }[] = []
 
   const dateMap: { [key: string]: number } = {}
 
   for (const item of everything) {
-    const dateKey = moment(item.date).format('YYYY-MM-DD')
+    const dateKey = dayjs(item.date).format('YYYY-MM-DD')
 
     dateMap[dateKey] = item.total_minutes
   }
@@ -107,6 +105,6 @@ export default async (pb: PBService) => {
     'Average time spent': average,
     'Longest streak': Math.max(longestStreak, currentStreak),
     'Current streak': currentStreak,
-    'Time spent today': dateMap[moment().format('YYYY-MM-DD')] || 0
+    'Time spent today': dateMap[dayjs().format('YYYY-MM-DD')] || 0
   }
 }

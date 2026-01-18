@@ -1,16 +1,17 @@
-import moment from 'moment'
-
-import { PBService } from '@functions/database'
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
 
 import getStatistics from './statistics'
 
-export default async function getReadmeHTML(pb: PBService) {
+dayjs.extend(duration)
+
+export default async function getReadmeHTML(pb: any) {
   const statistics = await getStatistics(pb)
 
-  const today = moment().format('YYYY-MM-DD')
+  const today = dayjs().format('YYYY-MM-DD')
 
   const todayRecord = await pb.getList
-    .collection('codeTime__daily_entries')
+    .collection('daily_entries')
     .page(1)
     .perPage(1)
     .filter([
@@ -83,9 +84,9 @@ export default async function getReadmeHTML(pb: PBService) {
         </div>
         <div>
           <span class="text-2xl font-semibold tracking-wider">${Math.floor(
-            moment.duration(statistics['Total time spent'], 'minutes').asHours()
+            dayjs.duration(statistics['Total time spent'], 'minutes').asHours()
           )}<span class="text-lime-800 text-xl">h</span> ${Math.floor(
-            moment
+            dayjs
               .duration(statistics['Total time spent'], 'minutes')
               .asMinutes() % 60
           )}<span
@@ -103,9 +104,9 @@ export default async function getReadmeHTML(pb: PBService) {
         </div>
         <div>
           <span class="text-2xl font-semibold tracking-wider">${Math.floor(
-            moment.duration(todayTime, 'minutes').asHours()
+            dayjs.duration(todayTime, 'minutes').asHours()
           )}<span class="text-zinc-600 text-xl">h</span> ${Math.floor(
-            moment.duration(todayTime, 'minutes').asMinutes() % 60
+            dayjs.duration(todayTime, 'minutes').asMinutes() % 60
           )}<span
               class="text-zinc-600 text-xl">m</span></span>
         </div>
@@ -124,9 +125,9 @@ export default async function getReadmeHTML(pb: PBService) {
         </div>
         <div>
           <span class="text-2xl font-semibold tracking-wider">${Math.floor(
-            moment.duration(statistics['Most time spent'], 'minutes').asHours()
+            dayjs.duration(statistics['Most time spent'], 'minutes').asHours()
           )}<span class="text-zinc-600 text-xl">h</span> ${Math.floor(
-            moment
+            dayjs
               .duration(statistics['Most time spent'], 'minutes')
               .asMinutes() % 60
           )}<span
@@ -145,11 +146,11 @@ export default async function getReadmeHTML(pb: PBService) {
         </div>
         <div>
           <span class="text-2xl font-semibold tracking-wider">${Math.floor(
-            moment
+            dayjs
               .duration(statistics['Average time spent'], 'minutes')
               .asHours()
           )}<span class="text-zinc-600 text-xl">h</span> ${Math.floor(
-            moment
+            dayjs
               .duration(statistics['Average time spent'], 'minutes')
               .asMinutes() % 60
           )}<span
@@ -194,7 +195,7 @@ export default async function getReadmeHTML(pb: PBService) {
     <div class="border-t-2 mt-4 border-zinc-800 flex items-center justify-between p-2 text-sm">
       <p class="flex text-zinc-500">[Computer Generated Report]</span>
       </p>
-      <p class="flex text-zinc-500">Last updated: <span class="font-medium text-zinc-100 pl-1">${moment().format(
+      <p class="flex text-zinc-500">Last updated: <span class="font-medium text-zinc-100 pl-1">${dayjs().format(
         'YYYY-MM-DD HH:mm:ss'
       )}</span>
       </p>

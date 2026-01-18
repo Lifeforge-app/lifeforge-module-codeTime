@@ -1,7 +1,8 @@
-import forgeAPI from '@/utils/forgeAPI'
 import clsx from 'clsx'
 import { Card, EmptyStateScreen, Widget, WithQueryData } from 'lifeforge-ui'
 import { useState } from 'react'
+
+import forgeAPI from '@/utils/forgeAPI'
 
 import HoursAndMinutesFromSeconds from './HoursAndMinutesFromSeconds'
 import IntervalSelector from './IntervalSelector'
@@ -37,7 +38,7 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
         setLastFor={setLastFor}
       />
       <WithQueryData
-        controller={forgeAPI['codeTime'][
+        controller={forgeAPI[
           type === 'languages' ? 'getTopLanguages' : 'getTopProjects'
         ].input({
           last: lastFor

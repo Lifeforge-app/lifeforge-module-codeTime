@@ -1,9 +1,10 @@
-import forgeAPI from '@/utils/forgeAPI'
 import { Icon } from '@iconify/react'
 import clsx from 'clsx'
 import { WithQueryData } from 'lifeforge-ui'
 import _ from 'lodash'
 import { useTranslation } from 'react-i18next'
+
+import forgeAPI from '@/utils/forgeAPI'
 
 import HoursAndMinutesFromSeconds from './HoursAndMinutesFromSeconds'
 
@@ -12,7 +13,7 @@ function CodeTimeStatistics() {
 
   return (
     <WithQueryData
-      controller={forgeAPI['codeTime'].getStatistics}
+      controller={forgeAPI.getStatistics}
       queryOptions={{
         refetchInterval: 60 * 1000
       }}

@@ -1,4 +1,3 @@
-import forgeAPI from '@/utils/forgeAPI'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -18,6 +17,8 @@ import {
 import { usePersonalization } from 'shared'
 import tinycolor from 'tinycolor2'
 
+import forgeAPI from '@/utils/forgeAPI'
+
 import IntervalSelector from './IntervalSelector'
 
 dayjs.extend(duration)
@@ -28,7 +29,7 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
   const [lastFor, setLastFor] = useState<'7 days' | '30 days'>('7 days')
 
   const dataQuery = useQuery(
-    forgeAPI['codeTime'].getLastXDays
+    forgeAPI.getLastXDays
       .input({
         days: lastFor.toString()
       })
