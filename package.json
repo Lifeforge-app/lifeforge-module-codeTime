@@ -1,7 +1,7 @@
 {
   "name": "@lifeforge/lifeforge--code-time",
   "displayName": "Code Time",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Melvin Chia <melvinchia623600@gmail.com>",
   "description": "See how much code magic you have created.",
   "repository": {
