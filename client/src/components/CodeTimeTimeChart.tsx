@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
-import { Card, EmptyStateScreen, Widget, WithQuery } from 'lifeforge-ui'
+import { Card, EmptyStateScreen, Widget, WithQuery } from '@lifeforge/ui'
 import { useMemo, useState } from 'react'
 import {
   Bar,
@@ -14,7 +14,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { usePersonalization } from 'shared'
+import { usePersonalization } from '@lifeforge/shared'
 import tinycolor from 'tinycolor2'
 
 import forgeAPI from '@/utils/forgeAPI'

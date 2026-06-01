@@ -1,4 +1,4 @@
-import { ContextMenuItem, ModuleHeader } from 'lifeforge-ui'
+import { ContextMenuItem, ModuleHeader } from '@lifeforge/ui'
 
 import CoddeTimeDailyHourTrendChart from './components/CoddeTimeDailyHourTrendChart'
 import CodeTimeActivityCalendar from './components/CodeTimeActivityCalendar'

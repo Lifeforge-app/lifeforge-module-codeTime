@@ -1,8 +1,9 @@
 import { Icon } from '@iconify/react'
 import clsx from 'clsx'
-import { WithQueryData } from 'lifeforge-ui'
 import _ from 'lodash'
 import { useTranslation } from 'react-i18next'
+
+import { WithQueryData } from '@lifeforge/ui'
 
 import forgeAPI from '@/utils/forgeAPI'
 

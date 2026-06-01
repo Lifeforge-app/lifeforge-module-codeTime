@@ -1,6 +1,7 @@
 import clsx from 'clsx'
-import { Card, EmptyStateScreen, Widget, WithQueryData } from 'lifeforge-ui'
 import { useState } from 'react'
+
+import { Card, EmptyStateScreen, Widget, WithQueryData } from '@lifeforge/ui'
 
 import forgeAPI from '@/utils/forgeAPI'
 

@@ -7,7 +7,7 @@ import {
   LoadingScreen,
   Widget,
   WithQuery
-} from 'lifeforge-ui'
+} from '@lifeforge/ui'
 import { useMemo } from 'react'
 import {
   Area,
@@ -18,8 +18,8 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { Link, usePersonalization } from 'shared'
-import type { WidgetConfig } from 'shared'
+import { Link, usePersonalization } from '@lifeforge/shared'
+import type { WidgetConfig } from '@lifeforge/shared'
 
 import forgeAPI from '@/utils/forgeAPI'
 

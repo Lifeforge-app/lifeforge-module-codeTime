@@ -1,6 +1,7 @@
 import clsx from 'clsx'
-import { Listbox, ListboxOption } from 'lifeforge-ui'
 import { useTranslation } from 'react-i18next'
+
+import { Listbox, ListboxOption } from '@lifeforge/ui'
 
 function IntervalSelector<T extends string>({
   options,
