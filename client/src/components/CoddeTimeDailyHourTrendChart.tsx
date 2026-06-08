@@ -15,7 +15,7 @@ import {
 } from 'recharts'
 import { usePersonalization } from '@lifeforge/shared'
 
-import forgeAPI from '@/utils/forgeAPI'
+import { forgeAPI } from '@/manifest'
 
 function CoddeTimeDailyHourTrendChart() {
   const { derivedThemeColor, bgTempPalette, derivedTheme } =

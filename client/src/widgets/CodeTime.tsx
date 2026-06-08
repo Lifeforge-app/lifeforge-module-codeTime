@@ -21,7 +21,7 @@ import {
 import { Link, usePersonalization } from '@lifeforge/shared'
 import type { WidgetConfig } from '@lifeforge/shared'
 
-import forgeAPI from '@/utils/forgeAPI'
+import { forgeAPI } from '@/manifest'
 
 const getDatesBetween = (start: Dayjs, end: Dayjs): Dayjs[] => {
   if (!start.isValid() || !end.isValid() || start.isAfter(end, 'day')) {

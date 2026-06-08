@@ -12,7 +12,7 @@ import { ActivityCalendar } from 'react-activity-calendar'
 import { Tooltip } from 'react-tooltip'
 import { anyColorToHex, usePersonalization } from '@lifeforge/shared'
 
-import forgeAPI from '@/utils/forgeAPI'
+import { forgeAPI } from '@/manifest'
 
 const target = forgeAPI.getActivities
 

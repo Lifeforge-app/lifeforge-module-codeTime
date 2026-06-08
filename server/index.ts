@@ -1,8 +1,12 @@
-import { ClientError, forgeRouter } from '@lifeforge/server-utils'
-import { createForge } from '@lifeforge/server-utils'
 import dayjs from 'dayjs'
 import puppeteer from 'puppeteer-core'
 import z from 'zod'
+
+import {
+  createForge,
+  forgeRouter,
+  writeContractFileToClient
+} from '@lifeforge/server-utils'
 
 import schema from './schema'
 import getReadmeHTML from './utils/readme'
@@ -11,18 +15,28 @@ import { default as _getStatistics } from './utils/statistics'
 const forge = createForge(schema)
 
 const getActivities = forge
-  .query()
-  .description('Get coding activity calendar by year')
-  .input({
-    query: z.object({
-      year: z
-        .string()
-        .optional()
-        .transform(val => (val ? parseInt(val, 10) : new Date().getFullYear()))
-    })
+  .query({
+    description: 'Get coding activity calendar by year',
+    input: {
+      query: z.object({
+        year: z.string().optional()
+      })
+    },
+    output: {
+      OK: z.object({
+        data: z.array(
+          z.object({
+            date: z.string(),
+            count: z.number(),
+            level: z.number()
+          })
+        ),
+        firstYear: z.number()
+      })
+    }
   })
-  .callback(async ({ pb, query: { year } }) => {
-    const yearValue = Number(year) || new Date().getFullYear()
+  .callback(async ({ pb, query: { year }, response }) => {
+    const yearValue = year ? parseInt(year, 10) : new Date().getFullYear()
 
     const data = await pb.getFullList
       .collection('daily_entries')
@@ -41,7 +55,7 @@ const getActivities = forge
       .execute()
 
     if (data.length === 0) {
-      return { data: [], firstYear: yearValue }
+      return response.ok({ data: [], firstYear: yearValue })
     }
 
     const groupByDate = data.reduce(
@@ -93,32 +107,42 @@ const getActivities = forge
       .sort(['date'])
       .execute()
 
-    return {
+    return response.ok({
       data: final,
       firstYear: +firstRecordEver.items[0].date.split(' ')[0].split('-')[0]
-    }
+    })
   })
 
 const getStatistics = forge
-  .query()
-  .description('Get overall coding statistics')
-  .input({})
-  .callback(({ pb }) => _getStatistics(pb))
+  .query({
+    description: 'Get overall coding statistics',
+    output: {
+      OK: z.record(z.string(), z.number())
+    }
+  })
+  .callback(async ({ pb, response }) => response.ok(await _getStatistics(pb)))
 
 const getLastXDays = forge
-  .query()
-  .description('Get coding data for last X days')
-  .input({
-    query: z.object({
-      days: z.string().transform(val => parseInt(val, 10))
-    })
+  .query({
+    description: 'Get coding data for last X days',
+    input: {
+      query: z.object({
+        days: z.string()
+      })
+    },
+    output: {
+      OK: z.array(schema.daily_entries),
+      BAD_REQUEST: z.string()
+    }
   })
-  .callback(async ({ pb, query: { days } }) => {
-    if (days > 30) {
-      throw new ClientError('days must be less than or equal to 30')
+  .callback(async ({ pb, query: { days }, response }) => {
+    const parsedDays = parseInt(days, 10)
+
+    if (parsedDays > 30) {
+      return response.badRequest('days must be less than or equal to 30')
     }
 
-    const lastXDays = dayjs().subtract(days, 'days').format('YYYY-MM-DD')
+    const lastXDays = dayjs().subtract(parsedDays, 'days').format('YYYY-MM-DD')
 
     const data = await pb.getFullList
       .collection('daily_entries')
@@ -131,18 +155,22 @@ const getLastXDays = forge
       ])
       .execute()
 
-    return data
+    return response.ok(data)
   })
 
 const getTopProjects = forge
-  .query()
-  .description('Get top projects by time spent')
-  .input({
-    query: z.object({
-      last: z.enum(['24 hours', '7 days', '30 days']).default('7 days')
-    })
+  .query({
+    description: 'Get top projects by time spent',
+    input: {
+      query: z.object({
+        last: z.enum(['24 hours', '7 days', '30 days']).default('7 days')
+      })
+    },
+    output: {
+      OK: z.record(z.string(), z.number())
+    }
   })
-  .callback(async ({ pb, query: { last } }) => {
+  .callback(async ({ pb, query: { last }, response }) => {
     const params = {
       '24 hours': [24, 'hours'],
       '7 days': [7, 'days'],
@@ -181,18 +209,22 @@ const getTopProjects = forge
       Object.entries(groupByProject).sort(([, a], [, b]) => b - a)
     )
 
-    return groupByProject
+    return response.ok(groupByProject)
   })
 
 const getTopLanguages = forge
-  .query()
-  .description('Get top languages by usage')
-  .input({
-    query: z.object({
-      last: z.enum(['24 hours', '7 days', '30 days']).default('7 days')
-    })
+  .query({
+    description: 'Get top languages by usage',
+    input: {
+      query: z.object({
+        last: z.enum(['24 hours', '7 days', '30 days']).default('7 days')
+      })
+    },
+    output: {
+      OK: z.record(z.string(), z.number())
+    }
   })
-  .callback(async ({ pb, query: { last } }) => {
+  .callback(async ({ pb, query: { last }, response }) => {
     const params = {
       '24 hours': [24, 'hours'],
       '7 days': [7, 'days'],
@@ -231,14 +263,22 @@ const getTopLanguages = forge
       Object.entries(groupByLanguage).sort(([, a], [, b]) => b - a)
     )
 
-    return groupByLanguage
+    return response.ok(groupByLanguage)
   })
 
 const getEachDay = forge
-  .query()
-  .description('Get daily coding time breakdown')
-  .input({})
-  .callback(async ({ pb }) => {
+  .query({
+    description: 'Get daily coding time breakdown',
+    output: {
+      OK: z.array(
+        z.object({
+          date: z.string(),
+          duration: z.number()
+        })
+      )
+    }
+  })
+  .callback(async ({ pb, response }) => {
     const lastDay = dayjs().format('YYYY-MM-DD')
 
     const firstDay = dayjs().subtract(30, 'days').format('YYYY-MM-DD')
@@ -267,17 +307,22 @@ const getEachDay = forge
       groupByDate[dateKey] = item.total_minutes
     }
 
-    return Object.entries(groupByDate).map(([date, item]) => ({
-      date,
-      duration: item * 1000 * 60
-    }))
+    return response.ok(
+      Object.entries(groupByDate).map(([date, item]) => ({
+        date,
+        duration: item * 1000 * 60
+      }))
+    )
   })
 
 const getTimeDistribution = forge
-  .query()
-  .description('Get hourly coding time distribution')
-  .input({})
-  .callback(async ({ pb }) => {
+  .query({
+    description: 'Get hourly coding time distribution',
+    output: {
+      OK: z.record(z.string(), z.number())
+    }
+  })
+  .callback(async ({ pb, response }) => {
     const data = await pb.getFullList.collection('daily_entries').execute()
 
     const hourlyData = data.map(item => item.hourly || {})
@@ -292,21 +337,31 @@ const getTimeDistribution = forge
       }
     }
 
-    return distribution
+    return response.ok(distribution)
   })
 
 const getUserMinutes = forge
-  .query()
-  .noAuth()
-  .noEncryption()
-  .description('Get total coding minutes')
-  .input({
-    query: z.object({
-      minutes: z.string().transform(val => parseInt(val, 10))
-    })
+  .query({
+    description: 'Get total coding minutes',
+    noAuth: true,
+    encrypted: false,
+    input: {
+      query: z.object({
+        minutes: z.string()
+      })
+    },
+    output: {
+      OK: z.object({
+        minutes: z.number()
+      })
+    }
   })
-  .callback(async ({ pb, query: { minutes } }) => {
-    const minTime = dayjs().subtract(minutes, 'minutes').format('YYYY-MM-DD')
+  .callback(async ({ pb, query: { minutes }, response }) => {
+    const parsedMinutes = parseInt(minutes, 10)
+
+    const minTime = dayjs()
+      .subtract(parsedMinutes, 'minutes')
+      .format('YYYY-MM-DD')
 
     const items = await pb.getFullList
       .collection('daily_entries')
@@ -319,20 +374,27 @@ const getUserMinutes = forge
       ])
       .execute()
 
-    return {
+    return response.ok({
       minutes: items.reduce((acc, item) => acc + item.total_minutes, 0)
-    }
+    })
   })
 
 const eventLog = forge
-  .mutation()
-  .noAuth()
-  .noEncryption()
-  .description('Record a coding activity event')
-  .input({
-    body: z.object({}).passthrough()
+  .mutation({
+    description: 'Record a coding activity event',
+    noAuth: true,
+    encrypted: false,
+    input: {
+      body: z.object({}).passthrough()
+    },
+    output: {
+      OK: z.object({
+        status: z.string(),
+        message: z.string()
+      })
+    }
   })
-  .callback(async ({ pb, body: data }) => {
+  .callback(async ({ pb, body: data, response }) => {
     data.eventTime = Math.floor(Date.now() / 60000) * 60000
 
     const date = dayjs(data.eventTime as string).format('YYYY-MM-DD')
@@ -375,7 +437,7 @@ const eventLog = forge
       const lastRecord = lastData.items[0]
 
       if (data.eventTime === lastRecord.last_timestamp) {
-        return { status: 'ok', message: 'success' }
+        return response.ok({ status: 'ok', message: 'success' })
       }
 
       const projects = lastRecord.projects
@@ -426,16 +488,16 @@ const eventLog = forge
         .execute()
     }
 
-    return { status: 'ok', message: 'success' }
+    return response.ok({ status: 'ok', message: 'success' })
   })
 
 const readme = forge
-  .query()
-  .noAuth()
-  .noEncryption()
-  .description('Generate README stats image')
-  .input({})
-  .noDefaultResponse()
+  .query({
+    description: 'Generate README stats image',
+    noAuth: true,
+    encrypted: false,
+    output: 'custom'
+  })
   .callback(async ({ pb, res }) => {
     const html = await getReadmeHTML(pb)
 
@@ -463,11 +525,10 @@ const readme = forge
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate')
     res.set('Content-Type', 'image/png')
 
-    //@ts-expect-error - Express response type
     res.status(200).send(imageBuffer)
   })
 
-export default forgeRouter({
+const routes = forgeRouter({
   getActivities,
   getStatistics,
   getLastXDays,
@@ -481,3 +542,7 @@ export default forgeRouter({
   eventLog,
   readme
 })
+
+writeContractFileToClient(routes, import.meta.dirname)
+
+export default routes

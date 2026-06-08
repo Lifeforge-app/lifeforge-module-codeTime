@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import { Card, EmptyStateScreen, Widget, WithQueryData } from '@lifeforge/ui'
 
-import forgeAPI from '@/utils/forgeAPI'
+import { forgeAPI } from '@/manifest'
 
 import HoursAndMinutesFromSeconds from './HoursAndMinutesFromSeconds'
 import IntervalSelector from './IntervalSelector'

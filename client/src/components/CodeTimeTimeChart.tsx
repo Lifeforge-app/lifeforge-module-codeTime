@@ -17,7 +17,7 @@ import {
 import { usePersonalization } from '@lifeforge/shared'
 import tinycolor from 'tinycolor2'
 
-import forgeAPI from '@/utils/forgeAPI'
+import { forgeAPI } from '@/manifest'
 
 import IntervalSelector from './IntervalSelector'
 
