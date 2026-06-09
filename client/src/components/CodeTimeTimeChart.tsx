@@ -15,7 +15,13 @@ import {
 } from 'recharts'
 import tinycolor from 'tinycolor2'
 
-import { Card, EmptyStateScreen, Widget, WithQuery , usePersonalization } from '@lifeforge/ui'
+import {
+  Card,
+  EmptyStateScreen,
+  Widget,
+  WithQuery,
+  usePersonalization
+} from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
 

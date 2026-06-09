@@ -13,7 +13,7 @@ import {
   YAxis
 } from 'recharts'
 
-import { Widget , usePersonalization } from '@lifeforge/ui'
+import { Widget, usePersonalization } from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
 

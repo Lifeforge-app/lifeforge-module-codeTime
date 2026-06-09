@@ -1,8 +1,8 @@
-import { Icon , WithQueryData } from '@lifeforge/ui'
 import clsx from 'clsx'
 import _ from 'lodash'
 import { useTranslation } from 'react-i18next'
 
+import { Icon, WithQueryData } from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
 

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import dayjs, { Dayjs } from 'dayjs'
 import { useMemo } from 'react'
+import { Link } from 'react-router'
 import {
   Area,
   AreaChart,
@@ -13,7 +14,6 @@ import {
 
 import type { WidgetConfig } from '@lifeforge/configs'
 import { usePersonalization } from '@lifeforge/ui'
-import { Link } from 'react-router'
 import {
   Button,
   Card,
