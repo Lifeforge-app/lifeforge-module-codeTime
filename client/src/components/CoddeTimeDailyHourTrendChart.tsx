@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import { Widget } from '@lifeforge/ui'
 import { useMemo } from 'react'
 import {
   Area,
@@ -13,7 +12,8 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { usePersonalization } from '@lifeforge/shared'
+
+import { Widget , usePersonalization } from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
 

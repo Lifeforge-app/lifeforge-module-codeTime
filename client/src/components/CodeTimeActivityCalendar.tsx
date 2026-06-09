@@ -1,16 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
+import { cloneElement, useState } from 'react'
+import { ActivityCalendar } from 'react-activity-calendar'
+import { Tooltip } from 'react-tooltip'
+
 import {
   EmptyStateScreen,
   Listbox,
   ListboxOption,
   Widget,
-  WithQuery
+  WithQuery,
+  anyColorToHex,
+  usePersonalization
 } from '@lifeforge/ui'
-import { cloneElement, useState } from 'react'
-import { ActivityCalendar } from 'react-activity-calendar'
-import { Tooltip } from 'react-tooltip'
-import { anyColorToHex, usePersonalization } from '@lifeforge/shared'
 
 import { forgeAPI } from '@/manifest'
 

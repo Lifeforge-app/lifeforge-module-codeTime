@@ -1,13 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 import dayjs, { Dayjs } from 'dayjs'
-import {
-  Button,
-  Card,
-  EmptyStateScreen,
-  LoadingScreen,
-  Widget,
-  WithQuery
-} from '@lifeforge/ui'
 import { useMemo } from 'react'
 import {
   Area,
@@ -18,8 +10,18 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { Link, usePersonalization } from '@lifeforge/shared'
-import type { WidgetConfig } from '@lifeforge/shared'
+
+import type { WidgetConfig } from '@lifeforge/configs'
+import { usePersonalization } from '@lifeforge/ui'
+import { Link } from 'react-router'
+import {
+  Button,
+  Card,
+  EmptyStateScreen,
+  LoadingScreen,
+  Widget,
+  WithQuery
+} from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
 
