@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { useTranslation } from 'react-i18next'
+import { useModuleTranslation } from '@lifeforge/localization'
 
 import { Listbox, ListboxOption } from '@lifeforge/ui'
 
@@ -14,7 +14,7 @@ function IntervalSelector<T extends string>({
   setLastFor: (value: T) => void
   className?: string
 }) {
-  const { t } = useTranslation('apps.codeTime')
+  const { t } = useModuleTranslation()
 
   return (
     <div className={clsx('shrink-0 items-center gap-3', className)}>

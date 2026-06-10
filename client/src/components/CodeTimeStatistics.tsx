@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import _ from 'lodash'
-import { useTranslation } from 'react-i18next'
+import { useModuleTranslation } from '@lifeforge/localization'
 
 import { Icon, WithQueryData } from '@lifeforge/ui'
 
@@ -9,7 +9,7 @@ import { forgeAPI } from '@/manifest'
 import HoursAndMinutesFromSeconds from './HoursAndMinutesFromSeconds'
 
 function CodeTimeStatistics() {
-  const { t } = useTranslation('apps.codeTime')
+  const { t } = useModuleTranslation()
 
   return (
     <WithQueryData

@@ -1,11 +1,11 @@
-import { useTranslation } from 'react-i18next'
+import { useModuleTranslation } from '@lifeforge/localization'
 
 export default function HoursAndMinutesFromSeconds({
   seconds
 }: {
   seconds: number
 }) {
-  const { t } = useTranslation('apps.codeTime')
+  const { t } = useModuleTranslation()
 
   return (
     <>
