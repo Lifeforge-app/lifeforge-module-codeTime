@@ -29,7 +29,6 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
           projects: 'tabler:clipboard'
         }[type]
       }
-      namespace="apps.codeTime"
       title={type}
     >
       <IntervalSelector
@@ -120,8 +119,7 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
             <EmptyStateScreen
               icon="tabler:calendar-off"
               message={{
-                id: 'activities',
-                namespace: 'apps.codeTime'
+                id: 'activities'
               }}
             />
           )

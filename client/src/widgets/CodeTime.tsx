@@ -13,13 +13,14 @@ import {
 } from 'recharts'
 
 import type { WidgetConfig } from '@lifeforge/configs'
-import { usePersonalization ,
+import {
   Button,
   Card,
   EmptyStateScreen,
   LoadingScreen,
   Widget,
-  WithQuery
+  WithQuery,
+  usePersonalization
 } from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
@@ -124,7 +125,6 @@ const CodeTime = () => {
           icon="tabler:code-off"
           message={{
             id: 'data',
-            namespace: 'apps.codeTime',
             tKey: 'widgets.codeTime'
           }}
         />
@@ -182,7 +182,6 @@ const CodeTime = () => {
         />
       }
       icon="tabler:chart-line"
-      namespace="apps.codeTime"
       title="Code Time"
     >
       <div className="flex-1">
@@ -195,7 +194,6 @@ const CodeTime = () => {
 export default CodeTime
 
 export const config: WidgetConfig = {
-  namespace: 'apps.codeTime',
   id: 'codeTime',
   icon: 'tabler:code',
   minH: 3

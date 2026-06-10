@@ -36,7 +36,6 @@ function CodeTimeActivityCalendar() {
     <Widget
       className="col-span-full h-min"
       icon="tabler:activity"
-      namespace="apps.codeTime"
       title="activitiesCalendar"
     >
       <WithQuery query={dataQuery}>
@@ -143,8 +142,7 @@ function CodeTimeActivityCalendar() {
             <EmptyStateScreen
               icon="tabler:calendar-off"
               message={{
-                id: 'activities',
-                namespace: 'apps.codeTime'
+                id: 'activities'
               }}
             />
           )

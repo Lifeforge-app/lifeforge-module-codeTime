@@ -1,6 +1,6 @@
 import clsx from 'clsx'
-import { useModuleTranslation } from '@lifeforge/localization'
 
+import { useModuleTranslation } from '@lifeforge/localization'
 import { Listbox, ListboxOption } from '@lifeforge/ui'
 
 function IntervalSelector<T extends string>({

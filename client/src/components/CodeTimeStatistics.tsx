@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import _ from 'lodash'
-import { useModuleTranslation } from '@lifeforge/localization'
 
+import { useModuleTranslation } from '@lifeforge/localization'
 import { Icon, WithQueryData } from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'

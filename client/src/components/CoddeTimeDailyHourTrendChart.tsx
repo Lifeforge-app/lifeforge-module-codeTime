@@ -73,7 +73,6 @@ function CoddeTimeDailyHourTrendChart() {
     <Widget
       className="col-span-full row-span-1"
       icon="tabler:hourglass"
-      namespace="apps.codeTime"
       title="Daily Hour Trend"
     >
       {hourlyTrendDataQuery.data && (

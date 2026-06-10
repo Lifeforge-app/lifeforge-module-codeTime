@@ -140,7 +140,6 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
           projects: 'tabler:clipboard'
         }[type]
       }
-      namespace="apps.codeTime"
       title={`${type}TimeGraph`}
     >
       <IntervalSelector
@@ -223,8 +222,7 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
               <EmptyStateScreen
                 icon="tabler:calendar-off"
                 message={{
-                  id: 'activities',
-                  namespace: 'apps.codeTime'
+                  id: 'activities'
                 }}
               />
             )
