@@ -13,8 +13,7 @@ import {
 } from 'recharts'
 
 import type { WidgetConfig } from '@lifeforge/configs'
-import { usePersonalization } from '@lifeforge/ui'
-import {
+import { usePersonalization ,
   Button,
   Card,
   EmptyStateScreen,

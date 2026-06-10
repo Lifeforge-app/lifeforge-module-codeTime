@@ -31,7 +31,6 @@ dayjs.extend(duration)
 
 function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
   const { bgTempPalette, derivedTheme } = usePersonalization()
-
   const [lastFor, setLastFor] = useState<'7 days' | '30 days'>('7 days')
 
   const dataQuery = useQuery(

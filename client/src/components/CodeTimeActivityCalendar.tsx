@@ -20,7 +20,6 @@ const target = forgeAPI.getActivities
 
 function CodeTimeActivityCalendar() {
   const { derivedTheme, derivedThemeColor: themeColor } = usePersonalization()
-
   const [year, setYear] = useState(new Date().getFullYear())
 
   const dataQuery = useQuery(
