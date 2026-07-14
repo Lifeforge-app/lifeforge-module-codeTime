@@ -13,7 +13,7 @@ function CodeTimeStatistics() {
 
   return (
     <WithQueryData
-      controller={forgeAPI.getStatistics}
+      contract={forgeAPI.getStatistics}
       queryOptions={{
         refetchInterval: 60 * 1000
       }}

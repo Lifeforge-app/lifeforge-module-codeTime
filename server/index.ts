@@ -12,7 +12,7 @@ import schema from './schema'
 import getReadmeHTML from './utils/readme'
 import { default as _getStatistics } from './utils/statistics'
 
-const forge = createForge(schema)
+const forge = createForge(schema, { modulePathAlias: 'codeTime' })
 
 const getActivities = forge
   .query({

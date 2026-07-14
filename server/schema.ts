@@ -1,5 +1,4 @@
 import z from 'zod'
-
 import { cleanSchemas } from '@lifeforge/server-utils'
 
 export const schemas = {
@@ -104,9 +103,7 @@ export const schemas = {
           type: 'number'
         }
       ],
-      indexes: [
-        'CREATE UNIQUE INDEX `idx_B0mAWvxXcb` ON `code_time__daily_entries` (`date`)'
-      ],
+      indexes: [],
       system: false
     }
   }

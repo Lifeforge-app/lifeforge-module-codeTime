@@ -38,7 +38,7 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
         setLastFor={setLastFor}
       />
       <WithQueryData
-        controller={forgeAPI[
+        contract={forgeAPI[
           type === 'languages' ? 'getTopLanguages' : 'getTopProjects'
         ].input({
           last: lastFor
