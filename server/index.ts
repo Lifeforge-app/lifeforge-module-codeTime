@@ -2,17 +2,12 @@ import dayjs from 'dayjs'
 import puppeteer from 'puppeteer-core'
 import z from 'zod'
 
-import {
-  createForge,
-  forgeRouter,
-  writeContractFileToClient
-} from '@lifeforge/server-utils'
+import { forgeRouter, writeContractFileToClient } from '@lifeforge/server-utils'
 
+import forge from './forge'
 import schema from './schema'
 import getReadmeHTML from './utils/readme'
 import { default as _getStatistics } from './utils/statistics'
-
-const forge = createForge(schema, { modulePathAlias: 'codeTime' })
 
 const getActivities = forge
   .query({
