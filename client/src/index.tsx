@@ -1,4 +1,8 @@
-import { ContextMenuItem, ModuleHeader } from '@lifeforge/ui'
+import {
+  ContextMenu,
+  ContextMenuItem,
+  ModuleHeader
+} from '@lifeforge/ui'
 
 import CoddeTimeDailyHourTrendChart from './components/CoddeTimeDailyHourTrendChart'
 import CodeTimeActivityCalendar from './components/CodeTimeActivityCalendar'
@@ -10,17 +14,15 @@ export default function CodeTime() {
   return (
     <>
       <ModuleHeader
-        contextMenuProps={{
-          children: (
-            <>
-              <ContextMenuItem
-                icon="tabler:clock"
-                label="Manage Schedule"
-                onClick={() => {}}
-              />
-            </>
-          )
-        }}
+        trailing={
+          <ContextMenu>
+            <ContextMenuItem
+              icon="tabler:clock"
+              label="Manage Schedule"
+              onClick={() => {}}
+            />
+          </ContextMenu>
+        }
       />
       <div className="mb-12 grid min-h-0 w-full grid-cols-1 gap-3 lg:grid-cols-2">
         <CodeTimeStatistics />

@@ -22,10 +22,10 @@ function IntervalSelector<T extends string>({
         {t('labels.inThePast')}
       </p>
       <Listbox
-        buttonContent={
-          <span>{`${lastFor.split(' ')[0]} ${t(`units.${lastFor.split(' ')[1].toLowerCase()}`)}`}</span>
-        }
         className="component-bg-lighter w-full! md:w-48!"
+        renderContent={() => (
+          <span>{`${lastFor.split(' ')[0]} ${t(`units.${lastFor.split(' ')[1].toLowerCase()}`)}`}</span>
+        )}
         value={lastFor}
         onChange={setLastFor}
       >

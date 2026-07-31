@@ -42,12 +42,7 @@ function CodeTimeActivityCalendar() {
         {({ data: activities, firstYear }) =>
           activities.length > 0 ? (
             <>
-              <Listbox
-                buttonContent={<span>{year}</span>}
-                className="md:hidden"
-                value={year}
-                onChange={setYear}
-              >
+              <Listbox className="md:hidden" value={year} onChange={setYear}>
                 {Array(new Date().getFullYear() - firstYear + 1)
                   .fill(0)
                   .map((_, index) => (
