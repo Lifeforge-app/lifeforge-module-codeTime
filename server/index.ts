@@ -340,6 +340,7 @@ const getUserMinutes = forge
     description: 'Get total coding minutes',
     noAuth: true,
     encrypted: false,
+    rateLimit: false,
     input: {
       query: z.object({
         minutes: z.string()
@@ -379,6 +380,7 @@ const eventLog = forge
     description: 'Record a coding activity event',
     noAuth: true,
     encrypted: false,
+    rateLimit: false,
     input: {
       body: z.object({}).passthrough()
     },
