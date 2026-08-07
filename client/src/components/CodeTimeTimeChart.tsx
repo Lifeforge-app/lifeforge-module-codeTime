@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import { useMemo, useState } from 'react'
 import {
   Bar,
@@ -16,10 +17,14 @@ import {
 import tinycolor from 'tinycolor2'
 
 import {
-  Card,
+  Box,
   EmptyStateScreen,
+  Flex,
+  Stack,
+  Text,
   Widget,
   WithQuery,
+  surface,
   usePersonalization
 } from '@lifeforge/ui'
 
@@ -28,6 +33,7 @@ import { forgeAPI } from '@/manifest'
 import IntervalSelector from './IntervalSelector'
 
 dayjs.extend(duration)
+dayjs.extend(relativeTime)
 
 function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
   const { bgTempPalette, derivedTheme } = usePersonalization()
@@ -50,10 +56,20 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
 
     const allItems = [
       ...new Set(dataQuery.data.flatMap(e => Object.keys(e[type])))
-    ].sort()
+    ].sort() as (typeof type)[]
 
     return days.map((day, dayIndex) => {
-      const dayData: Record<string, any> = { date: day }
+      const dayData: {
+        date: string
+        total: number
+      } & {
+        [k in typeof type]: number
+      } = {
+        date: day,
+        languages: 0,
+        projects: 0,
+        total: 0
+      }
 
       allItems.forEach(item => {
         dayData[item] = dataQuery.data[dayIndex]?.[type]?.[item] || 0
@@ -89,35 +105,38 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
   }) => {
     if (active && payload && payload.length) {
       return (
-        <Card className="border-bg-200 dark:border-bg-700/50 border p-0!">
-          <div className="component-bg-lighter p-4">
-            <p className="mb-2 font-medium">{label}</p>
-            <div className="space-y-1">
-              {payload
-                .filter(entry => entry.value > 0 && entry.dataKey !== 'total')
-                .map((entry, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between gap-6"
+        <Box shadow bg={surface.default} p="md" r="lg">
+          <Text mb="xs" weight="medium">
+            {label}
+          </Text>
+          <Stack gap="xs">
+            {payload
+              .filter(entry => entry.value > 0 && entry.dataKey !== 'total')
+              .map((entry, index) => (
+                <Flex key={index} align="center" gap="lg" justify="between">
+                  <Flex align="center" gap="xs">
+                    <Box
+                      flexShrink="0"
+                      style={{
+                        backgroundColor: entry.stroke,
+                        borderRadius: '2px',
+                        height: '0.625rem',
+                        width: '0.625rem'
+                      }}
+                    />
+                    <Text color="muted">{entry.name}</Text>
+                  </Flex>
+                  <Text
+                    size="sm"
+                    style={{ color: entry.stroke }}
+                    weight="semibold"
                   >
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="size-2.5 shrink-0 rounded-[2px]"
-                        style={{ backgroundColor: entry.stroke }}
-                      />
-                      <span className="text-bg-500">{entry.name}</span>
-                    </div>
-                    <span
-                      className="text-sm font-semibold"
-                      style={{ color: entry.stroke }}
-                    >
-                      {dayjs.duration(entry.value, 'minutes').humanize()}
-                    </span>
-                  </div>
-                ))}
-            </div>
-          </div>
-        </Card>
+                    {dayjs.duration(entry.value, 'minutes').humanize()}
+                  </Text>
+                </Flex>
+              ))}
+          </Stack>
+        </Box>
       )
     }
 
@@ -128,7 +147,7 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
     <Widget
       actionComponent={
         <IntervalSelector
-          className="hidden md:flex"
+          display={{ base: 'none', md: 'flex' }}
           lastFor={lastFor}
           options={['7 days', '30 days']}
           setLastFor={setLastFor}
@@ -143,12 +162,13 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
       title={`${type}TimeGraph`}
     >
       <IntervalSelector
-        className="mb-4 flex md:hidden"
+        display={{ base: 'flex', md: 'none' }}
         lastFor={lastFor}
+        mb="md"
         options={['7 days', '30 days']}
         setLastFor={setLastFor}
       />
-      <div className="size-full min-h-96">
+      <Box minHeight="24rem" width="100%">
         <WithQuery query={dataQuery}>
           {data =>
             data.length > 0 ? (
@@ -228,7 +248,7 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
             )
           }
         </WithQuery>
-      </div>
+      </Box>
     </Widget>
   )
 }

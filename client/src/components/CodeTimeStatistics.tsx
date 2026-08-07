@@ -1,12 +1,19 @@
-import clsx from 'clsx'
 import _ from 'lodash'
 
 import { useModuleTranslation } from '@lifeforge/localization'
-import { Icon, WithQueryData } from '@lifeforge/ui'
+import { Box, Grid, Text, Widget, WithQueryData } from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
 
 import HoursAndMinutesFromSeconds from './HoursAndMinutesFromSeconds'
+
+const STAT_ICONS: Record<string, string> = {
+  'Most time spent': 'tabler:coffee',
+  'Total time spent': 'tabler:clock',
+  'Average time spent': 'tabler:wave-saw-tool',
+  'Longest streak': 'tabler:flame',
+  'Current streak': 'tabler:flame'
+}
 
 function CodeTimeStatistics() {
   const { t } = useModuleTranslation()
@@ -19,71 +26,45 @@ function CodeTimeStatistics() {
       }}
     >
       {stats => (
-        <div className="col-span-full space-y-3">
-          <div className="flex-between border-bg-500/20 component-bg shadow-custom w-full flex-col gap-6 rounded-lg p-3 pb-6 in-[.bordered]:border-2 sm:flex-row sm:p-6">
-            <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
-              <div className="shadow-custom component-bg-lighter bg-bg-100 flex rounded-lg p-2 sm:p-4">
-                <Icon
-                  className="text-bg-500 dark:text-bg-50 text-2xl sm:text-3xl"
-                  icon="tabler:calendar"
+        <Box gridColumnSpan={{ base: 1, lg: 2 }} width="100%">
+          <Grid gap="sm" templateCols="repeat(auto-fit, minmax(14rem, 1fr))">
+            <Widget
+              icon="tabler:calendar"
+              title="statisticType.timeSpentToday"
+              variant="large-icon"
+            >
+              <Text size="4xl" weight="semibold">
+                <HoursAndMinutesFromSeconds
+                  seconds={stats['Time spent today']}
                 />
-              </div>
-              <div className="text-bg-500 text-lg font-medium whitespace-nowrap sm:text-xl">
-                {t('statisticType.timeSpentToday')}
-              </div>
-            </div>
-            <div className="text-4xl font-semibold">
-              <HoursAndMinutesFromSeconds seconds={stats['Time spent today']} />
-            </div>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(14rem,1fr))] gap-3">
+              </Text>
+            </Widget>
             {Object.entries(stats)
               .slice(0, -1)
               .map(([key, value], index) => (
-                <div
+                <Widget
                   key={key}
-                  className="flex-between border-bg-500/20 shadow-custom component-bg flex w-full flex-col gap-2 rounded-lg p-3 pb-6 in-[.bordered]:border-2 sm:items-start sm:p-6"
+                  icon={STAT_ICONS[key]!}
+                  iconColor={index === 3 ? 'orange-300' : undefined}
+                  title={`statisticType.${_.camelCase(key)}`}
+                  variant="large-icon"
                 >
-                  <div className="flex w-full flex-row items-center gap-2 sm:flex-col sm:items-start">
-                    <div className="shadow-custom component-bg-lighter bg-bg-100 flex rounded-lg p-2 sm:p-4">
-                      <Icon
-                        className={clsx(
-                          'text-2xl sm:text-3xl',
-                          index === 3
-                            ? 'text-orange-300'
-                            : 'text-bg-500 dark:text-bg-50'
-                        )}
-                        icon={
-                          {
-                            'Most time spent': 'tabler:coffee',
-                            'Total time spent': 'tabler:clock',
-                            'Average time spent': 'tabler:wave-saw-tool',
-                            'Longest streak': 'tabler:flame',
-                            'Current streak': 'tabler:flame'
-                          }[key]!
-                        }
-                      />
-                    </div>
-                    <div className="text-bg-500 text-lg whitespace-nowrap">
-                      {t(`statisticType.${_.camelCase(key)}`)}
-                    </div>
-                  </div>
-                  <div className="mt-2 text-4xl font-semibold whitespace-nowrap">
+                  <Text size="4xl" weight="semibold" whiteSpace="nowrap">
                     {index < 3 ? (
                       <HoursAndMinutesFromSeconds seconds={value} />
                     ) : (
                       <>
                         {value}
-                        <span className="text-bg-500 pl-1 text-3xl font-normal">
+                        <Text as="span" color="muted" pl="xs" size="3xl">
                           {t('units.days')}
-                        </span>
+                        </Text>
                       </>
                     )}
-                  </div>
-                </div>
+                  </Text>
+                </Widget>
               ))}
-          </div>
-        </div>
+          </Grid>
+        </Box>
       )}
     </WithQueryData>
   )

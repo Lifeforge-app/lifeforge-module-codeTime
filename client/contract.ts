@@ -109,8 +109,6 @@ export const contract = {
               "type": "string"
             },
             "relative_files": {},
-            "projects": {},
-            "languages": {},
             "hourly": {},
             "total_minutes": {
               "type": "number"
@@ -126,19 +124,31 @@ export const contract = {
             },
             "collectionName": {
               "type": "string"
+            },
+            "languages": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "projects": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
             }
           },
           "required": [
             "date",
             "relative_files",
-            "projects",
-            "languages",
             "hourly",
             "total_minutes",
             "last_timestamp",
             "id",
             "collectionId",
-            "collectionName"
+            "collectionName",
+            "languages",
+            "projects"
           ],
           "additionalProperties": false
         }

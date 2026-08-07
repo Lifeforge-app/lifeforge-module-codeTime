@@ -1,4 +1,5 @@
 import { useModuleTranslation } from '@lifeforge/localization'
+import { Text } from '@lifeforge/ui'
 
 export default function HoursAndMinutesFromSeconds({
   seconds
@@ -10,17 +11,17 @@ export default function HoursAndMinutesFromSeconds({
   return (
     <>
       {seconds === 0 ? (
-        <span className="text-bg-500 mr-4 block text-xl">
+        <Text color="muted" mr="md" size="xl">
           {t('units.noTime')}
-        </span>
+        </Text>
       ) : (
         <>
           {Math.floor(seconds / 60) > 0 ? (
             <>
               {Math.floor(seconds / 60).toLocaleString()}
-              <span className="text-bg-500 pl-1 text-3xl font-normal">
+              <Text as="span" color="muted" pl="xs" size="3xl">
                 {t('units.h')}
-              </span>
+              </Text>
             </>
           ) : (
             ''
@@ -28,9 +29,9 @@ export default function HoursAndMinutesFromSeconds({
           {Math.floor(seconds % 60) > 0 ? (
             <>
               {Math.floor(seconds % 60)}
-              <span className="text-bg-500 pl-1 text-3xl font-normal">
+              <Text as="span" color="muted" pl="xs" size="3xl">
                 {t('units.m')}
-              </span>
+              </Text>
             </>
           ) : (
             ''

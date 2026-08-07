@@ -1,32 +1,43 @@
-import clsx from 'clsx'
-
 import { useModuleTranslation } from '@lifeforge/localization'
-import { Listbox, ListboxOption } from '@lifeforge/ui'
+import {
+  Flex,
+  type FlexProps,
+  Listbox,
+  ListboxOption,
+  Text,
+  surface
+} from '@lifeforge/ui'
 
 function IntervalSelector<T extends string>({
   options,
   lastFor,
   setLastFor,
-  className
+  ...rest
 }: {
   options: T[]
   lastFor: T
   setLastFor: (value: T) => void
-  className?: string
-}) {
+} & FlexProps<'div'>) {
   const { t } = useModuleTranslation()
 
   return (
-    <div className={clsx('shrink-0 items-center gap-3', className)}>
-      <p className="text-bg-500 hidden shrink-0 font-medium tracking-wider md:block">
+    <Flex align="center" flexShrink="0" gap="sm" {...rest}>
+      <Text
+        color="muted"
+        display={{ base: 'none', md: 'block' }}
+        size="sm"
+        tracking="wide"
+        weight="medium"
+      >
         {t('labels.inThePast')}
-      </p>
+      </Text>
       <Listbox
-        className="component-bg-lighter w-full! md:w-48!"
+        bg={surface.light}
         renderContent={() => (
           <span>{`${lastFor.split(' ')[0]} ${t(`units.${lastFor.split(' ')[1].toLowerCase()}`)}`}</span>
         )}
         value={lastFor}
+        width={{ base: '100%', md: '12rem' }}
         onChange={setLastFor}
       >
         {options.map((last, index) => (
@@ -38,7 +49,7 @@ function IntervalSelector<T extends string>({
           />
         ))}
       </Listbox>
-    </div>
+    </Flex>
   )
 }
 

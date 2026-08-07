@@ -126,7 +126,17 @@ const getLastXDays = forge
       })
     },
     output: {
-      OK: z.array(schema.daily_entries),
+      OK: z.array(
+        schema.daily_entries
+          .omit({
+            languages: true,
+            projects: true
+          })
+          .extend({
+            languages: z.record(z.string(), z.number()),
+            projects: z.record(z.string(), z.number())
+          })
+      ),
       BAD_REQUEST: z.string()
     }
   })

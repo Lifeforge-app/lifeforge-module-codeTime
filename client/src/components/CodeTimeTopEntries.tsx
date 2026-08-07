@@ -1,12 +1,26 @@
-import clsx from 'clsx'
 import { useState } from 'react'
 
-import { Card, EmptyStateScreen, Widget, WithQueryData } from '@lifeforge/ui'
+import {
+  Bordered,
+  Box,
+  COLORS,
+  Card,
+  EmptyStateScreen,
+  Flex,
+  Stack,
+  Text,
+  Widget,
+  WithQueryData,
+  colorWithOpacity,
+  surface
+} from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
 
 import HoursAndMinutesFromSeconds from './HoursAndMinutesFromSeconds'
 import IntervalSelector from './IntervalSelector'
+
+const BAR_STYLES = ['red', 'orange', 'yellow', 'blue', 'emerald'] as const
 
 function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
   const [lastFor, setLastFor] = useState<'24 hours' | '7 days' | '30 days'>(
@@ -17,7 +31,7 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
     <Widget
       actionComponent={
         <IntervalSelector
-          className="hidden md:flex"
+          display={{ base: 'none', md: 'flex' }}
           lastFor={lastFor}
           options={['24 hours', '7 days', '30 days']}
           setLastFor={setLastFor}
@@ -32,8 +46,9 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
       title={type}
     >
       <IntervalSelector
-        className="mb-4 flex md:hidden"
+        display={{ base: 'flex', md: 'none' }}
         lastFor={lastFor}
+        mb="md"
         options={['24 hours', '7 days', '30 days']}
         setLastFor={setLastFor}
       />
@@ -50,70 +65,72 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
         {topEntries =>
           Object.keys(topEntries).length > 0 ? (
             <>
-              <div className="flex w-full">
-                {Object.keys(topEntries).length > 0 &&
-                  Object.entries(topEntries)
-                    .slice(0, 5)
-                    .map(([key, value], index) => (
-                      <div
+              <Flex width="100%">
+                {Object.entries(topEntries)
+                  .slice(0, 5)
+                  .map(([key, value], index) => {
+                    const entries = Object.entries(topEntries).slice(0, 5)
+                    const total = entries.reduce((a, b) => a + b[1], 0)
+
+                    return (
+                      <Box
                         key={key}
-                        className={clsx(
-                          'h-6 border',
-                          index === 0 && 'rounded-l-lg',
-                          index ===
-                            Object.entries(topEntries).slice(0, 5).length - 1 &&
-                            'shrink-0 rounded-r-lg',
-                          [
-                            'border-red-500 bg-red-500/20',
-                            'border-orange-500 bg-orange-500/20',
-                            'border-yellow-500 bg-yellow-500/20',
-                            'border-blue-500 bg-blue-500/20',
-                            'border-emerald-500 bg-emerald-500/20'
-                          ][index]
-                        )}
+                        bg={colorWithOpacity(`${BAR_STYLES[index]}-500`, '20%')}
+                        height="1.5rem"
                         style={{
-                          width: `${Math.round(
-                            (value /
-                              Object.entries(topEntries)
-                                .slice(0, 5)
-                                .reduce((a, b) => a + b[1], 0)) *
-                              100
-                          )}%`
+                          border: `1px solid ${COLORS[`${BAR_STYLES[index]}-500`]}`,
+                          borderLeft:
+                            index === 0
+                              ? `1px solid ${COLORS[`${BAR_STYLES[index]}-500`]}`
+                              : 'none',
+                          borderTopLeftRadius: index === 0 ? '0.5rem' : 0,
+                          borderBottomLeftRadius: index === 0 ? '0.5rem' : 0,
+                          borderTopRightRadius:
+                            index === entries.length - 1 ? '0.5rem' : 0,
+                          borderBottomRightRadius:
+                            index === entries.length - 1 ? '0.5rem' : 0
                         }}
-                      ></div>
-                    ))}
-              </div>
-              <ul className="space-y-3">
-                {topEntries !== null &&
-                  Object.keys(topEntries).length > 0 &&
-                  Object.entries(topEntries)
-                    .slice(0, 5)
-                    .map(([key, value], index) => (
-                      <Card
-                        key={key}
-                        className="flex-between component-bg-lighter flex-col gap-8 sm:flex-row"
-                      >
-                        <div className="flex w-full min-w-0 items-center gap-3 text-lg font-medium">
-                          <div
-                            className={clsx(
-                              'size-4 shrink-0 rounded-full rounded-md border',
-                              [
-                                'border-red-500 bg-red-500/20',
-                                'border-orange-500 bg-orange-500/20',
-                                'border-yellow-500 bg-yellow-500/20',
-                                'border-blue-500 bg-blue-500/20',
-                                'border-emerald-500 bg-emerald-500/20'
-                              ][index]
-                            )}
-                          ></div>
-                          <span className="w-full min-w-0 truncate">{key}</span>
-                        </div>
-                        <div className="shrink-0 text-3xl font-semibold">
+                        width={`${Math.round((value / total) * 100)}%`}
+                      />
+                    )
+                  })}
+              </Flex>
+              <Stack gap="sm">
+                {Object.entries(topEntries)
+                  .slice(0, 5)
+                  .map(([key, value], index) => (
+                    <Card
+                      key={key}
+                      align="center"
+                      bg={surface.light}
+                      direction={{ base: 'row', sm: 'row' }}
+                      gap="lg"
+                      justify="between"
+                    >
+                      <Flex align="center" gap="sm" minWidth="0" width="100%">
+                        <Bordered
+                          bg={colorWithOpacity(
+                            `${BAR_STYLES[index]}-500`,
+                            '20%'
+                          )}
+                          borderColor={`${BAR_STYLES[index]}-500`}
+                          flexShrink="0"
+                          height="1rem"
+                          r="md"
+                          width="1rem"
+                        />
+                        <Text truncate size="lg" weight="medium">
+                          {key}
+                        </Text>
+                      </Flex>
+                      <Box flexShrink="0">
+                        <Text size="3xl" weight="semibold">
                           <HoursAndMinutesFromSeconds seconds={value} />
-                        </div>
-                      </Card>
-                    ))}
-              </ul>
+                        </Text>
+                      </Box>
+                    </Card>
+                  ))}
+              </Stack>
             </>
           ) : (
             <EmptyStateScreen

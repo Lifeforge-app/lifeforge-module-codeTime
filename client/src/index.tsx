@@ -1,8 +1,6 @@
-import {
-  ContextMenu,
-  ContextMenuItem,
-  ModuleHeader
-} from '@lifeforge/ui'
+import { Fragment } from 'react'
+
+import { ContextMenu, ContextMenuItem, Grid, ModuleHeader } from '@lifeforge/ui'
 
 import CoddeTimeDailyHourTrendChart from './components/CoddeTimeDailyHourTrendChart'
 import CodeTimeActivityCalendar from './components/CodeTimeActivityCalendar'
@@ -24,23 +22,17 @@ export default function CodeTime() {
           </ContextMenu>
         }
       />
-      <div className="mb-12 grid min-h-0 w-full grid-cols-1 gap-3 lg:grid-cols-2">
+      <Grid gap="sm" mb="xl" templateCols={{ base: 1, lg: 2 }} width="100%">
         <CodeTimeStatistics />
         <CodeTimeActivityCalendar />
         {['projects', 'languages'].map(type => (
-          <>
-            <CodeTimeTimeChart
-              key={`${type}-time-chart`}
-              type={type as 'projects' | 'languages'}
-            />
-            <CodeTimeTopEntries
-              key={`${type}-top-entries`}
-              type={type as 'projects' | 'languages'}
-            />
-          </>
+          <Fragment key={type}>
+            <CodeTimeTimeChart type={type as 'projects' | 'languages'} />
+            <CodeTimeTopEntries type={type as 'projects' | 'languages'} />
+          </Fragment>
         ))}
         <CoddeTimeDailyHourTrendChart />
-      </div>
+      </Grid>
     </>
   )
 }

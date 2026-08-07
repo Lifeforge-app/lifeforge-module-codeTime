@@ -14,10 +14,13 @@ import {
 
 import type { WidgetConfig } from '@lifeforge/configs'
 import {
+  Box,
   Button,
   Card,
   EmptyStateScreen,
+  Flex,
   LoadingScreen,
+  Text,
   Widget,
   WithQuery,
   usePersonalization
@@ -99,16 +102,18 @@ const CodeTime = () => {
       const hours = payload[0].value
 
       return (
-        <Card className="border-bg-200 dark:border-bg-700/50 p-0!">
-          <div className="component-bg-lighter p-4!">
-            <p className="mb-1.5 font-medium">{payload[0].payload.date}</p>
-            <div className="flex items-center gap-2">
-              <span className="text-bg-500">Code time:</span>
-              <span className="font-semibold" style={{ color: themeColor }}>
+        <Card>
+          <Box p="md">
+            <Text mb="xs" weight="medium">
+              {payload[0].payload.date}
+            </Text>
+            <Flex align="center" gap="xs">
+              <Text color="muted">Code time:</Text>
+              <Text style={{ color: themeColor }} weight="semibold">
                 {msToTime(hours * 3600000)}
-              </span>
-            </div>
-          </div>
+              </Text>
+            </Flex>
+          </Box>
         </Card>
       )
     }
@@ -175,7 +180,6 @@ const CodeTime = () => {
       actionComponent={
         <Button
           as={Link}
-          className="p-2!"
           icon="tabler:chevron-right"
           to="/code-time"
           variant="plain"
@@ -184,9 +188,9 @@ const CodeTime = () => {
       icon="tabler:chart-line"
       title="Code Time"
     >
-      <div className="flex-1">
+      <Box flex="1">
         <WithQuery query={dataQuery}>{() => <>{renderContent()}</>}</WithQuery>
-      </div>
+      </Box>
     </Widget>
   )
 }

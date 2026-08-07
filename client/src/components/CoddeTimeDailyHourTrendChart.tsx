@@ -13,7 +13,14 @@ import {
   YAxis
 } from 'recharts'
 
-import { Widget, usePersonalization } from '@lifeforge/ui'
+import {
+  Box,
+  Card,
+  Flex,
+  Text,
+  Widget,
+  usePersonalization
+} from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
 
@@ -49,20 +56,22 @@ function CoddeTimeDailyHourTrendChart() {
       const minutes = payload[0].value
 
       return (
-        <div className="border-bg-200 bg-bg-100 rounded-xl border px-4 py-3 shadow-lg">
-          <p className="text-bg-500 mb-1.5 text-xs font-medium">
+        <Card
+          bg={{
+            base: 'bg-100',
+            dark: 'bg-800'
+          }}
+        >
+          <Text mb="xs" weight="medium">
             {dayjs().startOf('day').add(hour, 'hours').format('hh:mm A')}
-          </p>
-          <div className="flex items-center gap-2">
-            <span className="text-bg-500 text-xs">Time Spent:</span>
-            <span
-              className="text-sm font-semibold"
-              style={{ color: derivedThemeColor }}
-            >
+          </Text>
+          <Flex align="center" gap="xs">
+            <Text color="muted">Time Spent:</Text>
+            <Text style={{ color: derivedThemeColor }} weight="semibold">
               {minutes} minutes
-            </span>
-          </div>
-        </div>
+            </Text>
+          </Flex>
+        </Card>
       )
     }
 
@@ -71,12 +80,12 @@ function CoddeTimeDailyHourTrendChart() {
 
   return (
     <Widget
-      className="col-span-full row-span-1"
+      gridColumnSpan={{ base: 1, lg: 2 }}
       icon="tabler:hourglass"
       title="Daily Hour Trend"
     >
       {hourlyTrendDataQuery.data && (
-        <div className="min-h-96">
+        <Box minHeight="24rem">
           <ResponsiveContainer height="100%" width="100%">
             <ComposedChart
               data={chartData}
@@ -161,7 +170,7 @@ function CoddeTimeDailyHourTrendChart() {
               />
             </ComposedChart>
           </ResponsiveContainer>
-        </div>
+        </Box>
       )}
     </Widget>
   )
