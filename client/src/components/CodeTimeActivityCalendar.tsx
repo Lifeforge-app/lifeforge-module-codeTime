@@ -8,6 +8,7 @@ import {
   EmptyStateScreen,
   Listbox,
   ListboxOption,
+  Text,
   Widget,
   WithQuery,
   anyColorToHex,
@@ -16,6 +17,8 @@ import {
 } from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
+
+import { tooltip } from './CodeTimeActivityCalendar.css'
 
 const target = forgeAPI.getActivities
 
@@ -92,8 +95,8 @@ function CodeTimeActivityCalendar() {
                   maxLevel={6}
                   renderBlock={(block, activity) =>
                     cloneElement(block, {
-                      'data-tooltip-id': 'react-tooltip',
-                      'data-tooltip-html': `${
+                      'data-tooltip-id': 'codetime-react-tooltip',
+                      'data-tooltip-content': `${
                         Math.floor(activity.count / 60) > 0
                           ? `${Math.floor(activity.count / 60)} hours`
                           : ''
@@ -127,7 +130,27 @@ function CodeTimeActivityCalendar() {
           )
         }
       </WithQuery>
-      <Tooltip id="react-tooltip" style={{ zIndex: 9999 }} />
+      <Tooltip
+        className={tooltip}
+        id="codetime-react-tooltip"
+        opacity="1"
+        render={({ content }) => (
+          <Box
+            shadow
+            bg={{ base: 'bg-50', dark: 'bg-800' }}
+            px="md"
+            py="sm"
+            r="md"
+          >
+            <Text as="div" color={{ base: 'bg-600', dark: 'bg-400' }} py="sm">
+              {content}
+            </Text>
+          </Box>
+        )}
+        style={{
+          zIndex: '9999'
+        }}
+      />
     </Widget>
   )
 }
