@@ -27,7 +27,10 @@ function CodeTimeStatistics() {
     >
       {stats => (
         <Box gridColumnSpan={{ base: 1, lg: 2 }} width="100%">
-          <Grid gap="sm" templateCols="repeat(auto-fit, minmax(14rem, 1fr))">
+          <Grid
+            gap="sm"
+            templateCols={{ sm: 'repeat(auto-fit, minmax(14rem, 1fr))' }}
+          >
             <Widget
               icon="tabler:calendar"
               title="statisticType.timeSpentToday"

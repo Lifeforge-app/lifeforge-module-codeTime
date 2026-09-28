@@ -22,7 +22,13 @@ export default function CodeTime() {
           </ContextMenu>
         }
       />
-      <Grid gap="sm" mb="xl" templateCols={{ base: 1, lg: 2 }} width="100%">
+      <Grid
+        gap="sm"
+        mb="xl"
+        minWidth="0"
+        templateCols={{ base: 1, lg: 2 }}
+        width="100%"
+      >
         <CodeTimeStatistics />
         <CodeTimeActivityCalendar />
         {['projects', 'languages'].map(type => (
