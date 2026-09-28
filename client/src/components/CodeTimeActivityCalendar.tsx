@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { cloneElement, useState } from 'react'
 import { ActivityCalendar } from 'react-activity-calendar'
-import { Tooltip } from 'react-tooltip'
 
 import {
   Box,
   EmptyStateScreen,
   Listbox,
   ListboxOption,
+  ReactTooltip,
   Text,
   Widget,
   WithQuery,
@@ -130,7 +130,7 @@ function CodeTimeActivityCalendar() {
           )
         }
       </WithQuery>
-      <Tooltip
+      <ReactTooltip
         className={tooltip}
         id="codetime-react-tooltip"
         opacity="1"
