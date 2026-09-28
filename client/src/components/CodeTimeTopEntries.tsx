@@ -95,7 +95,7 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
                     )
                   })}
               </Flex>
-              <Stack gap="sm">
+              <Stack>
                 {Object.entries(topEntries)
                   .slice(0, 5)
                   .map(([key, value], index) => (
