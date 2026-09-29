@@ -20,7 +20,13 @@ import { forgeAPI } from '@/manifest'
 import HoursAndMinutesFromSeconds from './HoursAndMinutesFromSeconds'
 import IntervalSelector from './IntervalSelector'
 
-const BAR_STYLES = ['red', 'orange', 'yellow', 'blue', 'emerald'] as const
+const BAR_STYLES = [
+  'custom-400',
+  'custom-500',
+  'custom-600',
+  'custom-700',
+  'custom-800'
+] as const
 
 function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
   const [lastFor, setLastFor] = useState<'24 hours' | '7 days' | '30 days'>(
@@ -75,13 +81,13 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
                     return (
                       <Box
                         key={key}
-                        bg={colorWithOpacity(`${BAR_STYLES[index]}-500`, '20%')}
+                        bg={colorWithOpacity(BAR_STYLES[index], '20%')}
                         height="1.5rem"
                         style={{
-                          border: `1px solid ${COLORS[`${BAR_STYLES[index]}-500`]}`,
+                          border: `1px solid ${COLORS[BAR_STYLES[index]]}`,
                           borderLeft:
                             index === 0
-                              ? `1px solid ${COLORS[`${BAR_STYLES[index]}-500`]}`
+                              ? `1px solid ${COLORS[BAR_STYLES[index]]}`
                               : 'none',
                           borderTopLeftRadius: index === 0 ? '0.5rem' : 0,
                           borderBottomLeftRadius: index === 0 ? '0.5rem' : 0,
@@ -109,11 +115,8 @@ function CodeTimeTopEntries({ type }: { type: 'languages' | 'projects' }) {
                     >
                       <Flex align="center" gap="sm" minWidth="0" width="100%">
                         <Bordered
-                          bg={colorWithOpacity(
-                            `${BAR_STYLES[index]}-500`,
-                            '20%'
-                          )}
-                          borderColor={`${BAR_STYLES[index]}-500`}
+                          bg={colorWithOpacity(BAR_STYLES[index], '20%')}
+                          borderColor={BAR_STYLES[index]}
                           flexShrink="0"
                           height="1rem"
                           r="md"

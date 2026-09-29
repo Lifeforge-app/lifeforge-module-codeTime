@@ -7,8 +7,8 @@ import {
   EmptyStateScreen,
   Listbox,
   ListboxOption,
-  ReactTooltip,
   Text,
+  Tooltip,
   Widget,
   WithQuery,
   anyColorToHex,
@@ -17,8 +17,6 @@ import {
 } from '@lifeforge/ui'
 
 import { forgeAPI } from '@/manifest'
-
-import { tooltip } from './CodeTimeActivityCalendar.css'
 
 const target = forgeAPI.getActivities
 
@@ -130,10 +128,8 @@ function CodeTimeActivityCalendar() {
           )
         }
       </WithQuery>
-      <ReactTooltip
-        className={tooltip}
+      <Tooltip
         id="codetime-react-tooltip"
-        opacity="1"
         render={({ content }) => (
           <Box
             shadow
@@ -147,9 +143,6 @@ function CodeTimeActivityCalendar() {
             </Text>
           </Box>
         )}
-        style={{
-          zIndex: '9999'
-        }}
       />
     </Widget>
   )

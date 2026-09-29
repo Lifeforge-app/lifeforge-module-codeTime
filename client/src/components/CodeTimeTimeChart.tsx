@@ -36,7 +36,9 @@ dayjs.extend(duration)
 dayjs.extend(relativeTime)
 
 function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
-  const { bgTempPalette, derivedTheme } = usePersonalization()
+  const { bgTempPalette, derivedTheme, derivedThemeColor } =
+    usePersonalization()
+
   const [lastFor, setLastFor] = useState<'7 days' | '30 days'>('7 days')
 
   const dataQuery = useQuery(
@@ -88,6 +90,24 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
       ...new Set(dataQuery.data.flatMap(e => Object.keys(e[type])))
     ].sort()
   }, [dataQuery.data, dataQuery.isSuccess, type])
+
+  const itemColors = useMemo(() => {
+    const base = tinycolor(derivedThemeColor)
+
+    return allItems.map((_, index) => {
+      const t = allItems.length <= 1 ? 0.5 : index / (allItems.length - 1)
+
+      const color =
+        t < 0.5
+          ? base.clone().lighten((0.5 - t) * 60)
+          : base.clone().darken((t - 0.5) * 60)
+
+      return {
+        fill: color.clone().setAlpha(0.4).toRgbString(),
+        stroke: color.toRgbString()
+      }
+    })
+  }, [derivedThemeColor, allItems])
 
   const CustomTooltip = ({
     active,
@@ -201,20 +221,10 @@ function CodeTimeTimeChart({ type }: { type: 'projects' | 'languages' }) {
                     <Bar
                       key={item}
                       dataKey={item}
-                      fill={tinycolor({
-                        h: (index * 360) / allItems.length,
-                        s: 100,
-                        v: 100,
-                        a: 0.4
-                      }).toRgbString()}
+                      fill={itemColors[index]?.fill}
                       name={item}
                       stackId="stack"
-                      stroke={tinycolor({
-                        h: (index * 360) / allItems.length,
-                        s: 100,
-                        v: 100,
-                        a: 1
-                      }).toRgbString()}
+                      stroke={itemColors[index]?.stroke}
                       strokeWidth={1}
                     />
                   ))}
