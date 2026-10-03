@@ -108,24 +108,7 @@ export const contract = {
             "date": {
               "type": "string"
             },
-            "relative_files": {},
-            "hourly": {},
-            "total_minutes": {
-              "type": "number"
-            },
-            "last_timestamp": {
-              "type": "number"
-            },
-            "id": {
-              "type": "string"
-            },
-            "collectionId": {
-              "type": "string"
-            },
-            "collectionName": {
-              "type": "string"
-            },
-            "languages": {
+            "relative_files": {
               "type": "object",
               "additionalProperties": {
                 "type": "number"
@@ -136,26 +119,37 @@ export const contract = {
               "additionalProperties": {
                 "type": "number"
               }
+            },
+            "languages": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "hourly": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "total_minutes": {
+              "type": "number"
+            },
+            "last_timestamp": {
+              "type": "number"
             }
           },
           "required": [
             "date",
             "relative_files",
+            "projects",
+            "languages",
             "hourly",
             "total_minutes",
-            "last_timestamp",
-            "id",
-            "collectionId",
-            "collectionName",
-            "languages",
-            "projects"
+            "last_timestamp"
           ],
           "additionalProperties": false
         }
-      },
-      "BAD_REQUEST": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "string"
       }
     }
   },

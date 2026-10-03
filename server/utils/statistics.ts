@@ -1,14 +1,19 @@
+import { asc } from 'drizzle-orm'
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
+import { type BuiltModuleSchema } from '@lifeforge/drizzle'
 import dayjs from 'dayjs'
 
+import type { CodeTimeSchema } from '../forge'
+import { dailyEntries } from '../schema.drizzle'
 import { getDates } from './dates'
 
-export default async (pb: any) => {
-  const everything = (await pb.getFullList
-    .collection('daily_entries')
-    .sort(['date'])
-    .execute()) as any[]
+type CodeTimeDb = PostgresJsDatabase<BuiltModuleSchema<CodeTimeSchema>>
 
-  let groupByDate: { date: string; count: number }[] = []
+export default async (db: CodeTimeDb) => {
+  const everything = await db
+    .select()
+    .from(dailyEntries)
+    .orderBy(asc(dailyEntries.date))
 
   const dateMap: { [key: string]: number } = {}
 
@@ -18,7 +23,7 @@ export default async (pb: any) => {
     dateMap[dateKey] = item.total_minutes
   }
 
-  groupByDate = Object.entries(dateMap).map(([date, count]) => ({
+  let groupByDate = Object.entries(dateMap).map(([date, count]) => ({
     date,
     count
   }))

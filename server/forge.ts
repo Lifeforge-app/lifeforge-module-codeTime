@@ -1,5 +1,12 @@
-import { createForge } from '@lifeforge/server-utils'
+import { createForgeContractBuilder } from '@lifeforge/server-utils'
 
-const forge = createForge({ modulePathAlias: 'codeTime' })
+import * as schema from './schema.drizzle'
+
+export type CodeTimeSchema = typeof schema
+
+const forge = createForgeContractBuilder({
+  schema,
+  modulePathAlias: 'codeTime'
+})
 
 export default forge

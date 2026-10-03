@@ -1,29 +1,27 @@
+import { eq } from 'drizzle-orm'
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
+import { type BuiltModuleSchema } from '@lifeforge/drizzle'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 
+import type { CodeTimeSchema } from '../forge'
+import { dailyEntries } from '../schema.drizzle'
 import getStatistics from './statistics'
 
 dayjs.extend(duration)
 
-export default async function getReadmeHTML(pb: any) {
-  const statistics = await getStatistics(pb)
+type CodeTimeDb = PostgresJsDatabase<BuiltModuleSchema<CodeTimeSchema>>
+
+export default async function getReadmeHTML(db: CodeTimeDb) {
+  const statistics = await getStatistics(db)
 
   const today = dayjs().format('YYYY-MM-DD')
 
-  const todayRecord = await pb.getList
-    .collection('daily_entries')
-    .page(1)
-    .perPage(1)
-    .filter([
-      {
-        field: 'date',
-        operator: '=',
-        value: `${today} 00:00:00.000Z`
-      }
-    ])
-    .execute()
-
-  const todayData = todayRecord.items[0]
+  const [todayData] = await db
+    .select()
+    .from(dailyEntries)
+    .where(eq(dailyEntries.date, today))
+    .limit(1)
 
   const todayTime = todayData ? todayData.total_minutes : 0
 

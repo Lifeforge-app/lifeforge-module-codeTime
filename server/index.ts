@@ -1,3 +1,4 @@
+import { and, asc, eq, gte, lte } from 'drizzle-orm'
 import dayjs from 'dayjs'
 import puppeteer from 'puppeteer-core'
 import z from 'zod'
@@ -5,9 +6,19 @@ import z from 'zod'
 import { forgeRouter, writeContractFileToClient } from '@lifeforge/server-utils'
 
 import forge from './forge'
-import schema from './schema'
+import { dailyEntries } from './schema.drizzle'
 import getReadmeHTML from './utils/readme'
 import { default as _getStatistics } from './utils/statistics'
+
+const dailyEntryDto = z.object({
+  date: z.string(),
+  relative_files: z.record(z.string(), z.number()),
+  projects: z.record(z.string(), z.number()),
+  languages: z.record(z.string(), z.number()),
+  hourly: z.record(z.string(), z.number()),
+  total_minutes: z.number(),
+  last_timestamp: z.number()
+})
 
 const getActivities = forge
   .query({
@@ -30,24 +41,19 @@ const getActivities = forge
       })
     }
   })
-  .callback(async ({ pb, query: { year }, response }) => {
+  .callback(async ({ db, query: { year }, response }) => {
     const yearValue = year ? parseInt(year, 10) : new Date().getFullYear()
 
-    const data = await pb.getFullList
-      .collection('daily_entries')
-      .filter([
-        {
-          field: 'date',
-          operator: '>=',
-          value: `${yearValue}-01-01 00:00:00.000Z`
-        },
-        {
-          field: 'date',
-          operator: '<=',
-          value: `${yearValue}-12-31 23:59:59.999Z`
-        }
-      ])
-      .execute()
+    const data = await db
+      .select()
+      .from(dailyEntries)
+      .where(
+        and(
+          gte(dailyEntries.date, `${yearValue}-01-01`),
+          lte(dailyEntries.date, `${yearValue}-12-31`)
+        )
+      )
+      .orderBy(asc(dailyEntries.date))
 
     if (data.length === 0) {
       return response.ok({ data: [], firstYear: yearValue })
@@ -55,9 +61,7 @@ const getActivities = forge
 
     const groupByDate = data.reduce(
       (acc, item) => {
-        const dateKey = dayjs(item.date).format('YYYY-MM-DD')
-
-        acc[dateKey] = item.total_minutes
+        acc[item.date] = item.total_minutes
 
         return acc
       },
@@ -95,16 +99,15 @@ const getActivities = forge
       })
     }
 
-    const firstRecordEver = await pb.getList
-      .collection('daily_entries')
-      .page(1)
-      .perPage(1)
-      .sort(['date'])
-      .execute()
+    const [firstRecord] = await db
+      .select({ date: dailyEntries.date })
+      .from(dailyEntries)
+      .orderBy(asc(dailyEntries.date))
+      .limit(1)
 
     return response.ok({
       data: final,
-      firstYear: +firstRecordEver.items[0].date.split(' ')[0].split('-')[0]
+      firstYear: firstRecord ? +firstRecord.date.split('-')[0] : yearValue
     })
   })
 
@@ -115,7 +118,7 @@ const getStatistics = forge
       OK: z.record(z.string(), z.number())
     }
   })
-  .callback(async ({ pb, response }) => response.ok(await _getStatistics(pb)))
+  .callback(async ({ db, response }) => response.ok(await _getStatistics(db)))
 
 const getLastXDays = forge
   .query({
@@ -126,21 +129,10 @@ const getLastXDays = forge
       })
     },
     output: {
-      OK: z.array(
-        schema.daily_entries
-          .omit({
-            languages: true,
-            projects: true
-          })
-          .extend({
-            languages: z.record(z.string(), z.number()),
-            projects: z.record(z.string(), z.number())
-          })
-      ),
-      BAD_REQUEST: z.string()
+      OK: z.array(dailyEntryDto)
     }
   })
-  .callback(async ({ pb, query: { days }, response }) => {
+  .callback(async ({ db, query: { days }, response }) => {
     const parsedDays = parseInt(days, 10)
 
     if (parsedDays > 30) {
@@ -149,16 +141,10 @@ const getLastXDays = forge
 
     const lastXDays = dayjs().subtract(parsedDays, 'days').format('YYYY-MM-DD')
 
-    const data = await pb.getFullList
-      .collection('daily_entries')
-      .filter([
-        {
-          field: 'date',
-          operator: '>=',
-          value: `${lastXDays} 00:00:00.000Z`
-        }
-      ])
-      .execute()
+    const data = await db
+      .select()
+      .from(dailyEntries)
+      .where(gte(dailyEntries.date, lastXDays))
 
     return response.ok(data)
   })
@@ -175,7 +161,7 @@ const getTopProjects = forge
       OK: z.record(z.string(), z.number())
     }
   })
-  .callback(async ({ pb, query: { last }, response }) => {
+  .callback(async ({ db, query: { last }, response }) => {
     const params = {
       '24 hours': [24, 'hours'],
       '7 days': [7, 'days'],
@@ -186,16 +172,10 @@ const getTopProjects = forge
       .subtract(Number(params[0]), params[1] as dayjs.ManipulateType)
       .format('YYYY-MM-DD')
 
-    const data = await pb.getFullList
-      .collection('daily_entries')
-      .filter([
-        {
-          field: 'date',
-          operator: '>=',
-          value: `${date} 00:00:00.000Z`
-        }
-      ])
-      .execute()
+    const data = await db
+      .select({ projects: dailyEntries.projects })
+      .from(dailyEntries)
+      .where(gte(dailyEntries.date, date))
 
     const projects = data.map(item => item.projects)
 
@@ -229,7 +209,7 @@ const getTopLanguages = forge
       OK: z.record(z.string(), z.number())
     }
   })
-  .callback(async ({ pb, query: { last }, response }) => {
+  .callback(async ({ db, query: { last }, response }) => {
     const params = {
       '24 hours': [24, 'hours'],
       '7 days': [7, 'days'],
@@ -240,16 +220,10 @@ const getTopLanguages = forge
       .subtract(Number(params[0]), params[1] as dayjs.ManipulateType)
       .format('YYYY-MM-DD')
 
-    const data = await pb.getFullList
-      .collection('daily_entries')
-      .filter([
-        {
-          field: 'date',
-          operator: '>=',
-          value: `${date} 00:00:00.000Z`
-        }
-      ])
-      .execute()
+    const data = await db
+      .select({ languages: dailyEntries.languages })
+      .from(dailyEntries)
+      .where(gte(dailyEntries.date, date))
 
     const languages = data.map(item => item.languages)
 
@@ -283,33 +257,25 @@ const getEachDay = forge
       )
     }
   })
-  .callback(async ({ pb, response }) => {
+  .callback(async ({ db, response }) => {
     const lastDay = dayjs().format('YYYY-MM-DD')
 
     const firstDay = dayjs().subtract(30, 'days').format('YYYY-MM-DD')
 
-    const data = await pb.getFullList
-      .collection('daily_entries')
-      .filter([
-        {
-          field: 'date',
-          operator: '>=',
-          value: `${firstDay} 00:00:00.000Z`
-        },
-        {
-          field: 'date',
-          operator: '<=',
-          value: `${lastDay} 23:59:59.999Z`
-        }
-      ])
-      .execute()
+    const data = await db
+      .select()
+      .from(dailyEntries)
+      .where(
+        and(
+          gte(dailyEntries.date, firstDay),
+          lte(dailyEntries.date, lastDay)
+        )
+      )
 
     const groupByDate: { [key: string]: number } = {}
 
     for (const item of data) {
-      const dateKey = dayjs(item.date).format('YYYY-MM-DD')
-
-      groupByDate[dateKey] = item.total_minutes
+      groupByDate[item.date] = item.total_minutes
     }
 
     return response.ok(
@@ -327,8 +293,8 @@ const getTimeDistribution = forge
       OK: z.record(z.string(), z.number())
     }
   })
-  .callback(async ({ pb, response }) => {
-    const data = await pb.getFullList.collection('daily_entries').execute()
+  .callback(async ({ db, response }) => {
+    const data = await db.select().from(dailyEntries)
 
     const hourlyData = data.map(item => item.hourly || {})
 
@@ -362,23 +328,17 @@ const getUserMinutes = forge
       })
     }
   })
-  .callback(async ({ pb, query: { minutes }, response }) => {
+  .callback(async ({ db, query: { minutes }, response }) => {
     const parsedMinutes = parseInt(minutes, 10)
 
     const minTime = dayjs()
       .subtract(parsedMinutes, 'minutes')
       .format('YYYY-MM-DD')
 
-    const items = await pb.getFullList
-      .collection('daily_entries')
-      .filter([
-        {
-          field: 'date',
-          operator: '>=',
-          value: `${minTime} 00:00:00.000Z`
-        }
-      ])
-      .execute()
+    const items = await db
+      .select({ total_minutes: dailyEntries.total_minutes })
+      .from(dailyEntries)
+      .where(gte(dailyEntries.date, minTime))
 
     return response.ok({
       minutes: items.reduce((acc, item) => acc + item.total_minutes, 0)
@@ -401,98 +361,66 @@ const eventLog = forge
       })
     }
   })
-  .callback(async ({ pb, body: data, response }) => {
-    data.eventTime = Math.floor(Date.now() / 60000) * 60000
+  .callback(async ({ db, body: data, response }) => {
+    const eventTime = Math.floor(Date.now() / 60000) * 60000
 
-    const date = dayjs(data.eventTime as string).format('YYYY-MM-DD')
+    const date = dayjs(eventTime).format('YYYY-MM-DD')
 
-    const lastData = await pb.getList
-      .collection('daily_entries')
-      .page(1)
-      .perPage(1)
-      .filter([
-        {
-          field: 'date',
-          operator: '~',
-          value: date
-        }
-      ])
-      .execute()
+    const lastRecord = await db.query.daily_entries.findFirst({
+      where: { date }
+    })
 
-    if (lastData.totalItems === 0) {
-      await pb.create
-        .collection('daily_entries')
-        .data({
-          date,
-          projects: {
-            [data.project as string]: 1
-          },
-          relative_files: {
-            [data.relativeFile as string]: 1
-          },
-          languages: {
-            [data.language as string]: 1
-          },
-          hourly: {
-            [dayjs(data.eventTime as string).format('H')]: 1
-          },
-          total_minutes: 1,
-          last_timestamp: data.eventTime
-        })
-        .execute()
+    const project = data.project as string
+
+    const relativeFile = data.relativeFile as string
+
+    const language = data.language as string
+
+    const hourKey = dayjs(eventTime).format('H')
+
+    if (!lastRecord) {
+      await db.insert(dailyEntries).values({
+        date,
+        projects: { [project]: 1 },
+        relative_files: { [relativeFile]: 1 },
+        languages: { [language]: 1 },
+        hourly: { [hourKey]: 1 },
+        total_minutes: 1,
+        last_timestamp: eventTime
+      })
     } else {
-      const lastRecord = lastData.items[0]
-
-      if (data.eventTime === lastRecord.last_timestamp) {
+      if (eventTime === lastRecord.last_timestamp) {
         return response.ok({ status: 'ok', message: 'success' })
       }
 
-      const projects = lastRecord.projects
+      const projects = { ...lastRecord.projects }
 
-      if (projects[data.project as string]) {
-        projects[data.project as string] += 1
-      } else {
-        projects[data.project as string] = 1
-      }
+      projects[project] = (projects[project] ?? 0) + 1
 
-      const relativeFiles = lastRecord.relative_files
+      const relativeFiles = { ...lastRecord.relative_files }
 
-      if (relativeFiles[data.relativeFile as string]) {
-        relativeFiles[data.relativeFile as string] += 1
-      } else {
-        relativeFiles[data.relativeFile as string] = 1
-      }
+      relativeFiles[relativeFile] = (relativeFiles[relativeFile] ?? 0) + 1
 
-      const languages = lastRecord.languages
+      const languages = { ...lastRecord.languages }
 
-      if (languages[data.language as string]) {
-        languages[data.language as string] += 1
-      } else {
-        languages[data.language as string] = 1
-      }
+      languages[language] = (languages[language] ?? 0) + 1
 
-      const hourly = lastRecord.hourly || {}
+      const hourly = { ...(lastRecord.hourly || {}) }
 
-      const hourKey = dayjs(data.eventTime as string).format('H')
+      hourly[hourKey] = (hourly[hourKey] ?? 0) + 1
 
-      if (hourly[hourKey]) {
-        hourly[hourKey] += 1
-      } else {
-        hourly[hourKey] = 1
-      }
-
-      await pb.update
-        .collection('daily_entries')
-        .id(lastRecord.id)
-        .data({
+      await db
+        .update(dailyEntries)
+        .set({
           projects,
           relative_files: relativeFiles,
           languages,
           hourly,
           total_minutes: lastRecord.total_minutes + 1,
-          last_timestamp: data.eventTime
+          last_timestamp: eventTime,
+          updated: new Date()
         })
-        .execute()
+        .where(eq(dailyEntries.id, lastRecord.id))
     }
 
     return response.ok({ status: 'ok', message: 'success' })
@@ -505,8 +433,8 @@ const readme = forge
     encrypted: false,
     output: 'custom'
   })
-  .callback(async ({ pb, res }) => {
-    const html = await getReadmeHTML(pb)
+  .callback(async ({ db, res }) => {
+    const html = await getReadmeHTML(db)
 
     const browser = await puppeteer.launch({
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
