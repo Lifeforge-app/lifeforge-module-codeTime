@@ -271,6 +271,7 @@ const getEachDay = forge
           lte(dailyEntries.date, lastDay)
         )
       )
+      .orderBy(asc(dailyEntries.date))
 
     const groupByDate: { [key: string]: number } = {}
 
