@@ -12,7 +12,6 @@ import {
   Widget,
   WithQuery,
   anyColorToHex,
-  surface,
   usePersonalization
 } from '@lifeforge/ui'
 
@@ -45,11 +44,7 @@ function CodeTimeActivityCalendar() {
         {({ data: activities, firstYear }) =>
           activities.length > 0 ? (
             <>
-              <Listbox
-                bg={surface.lightInteractive}
-                value={year}
-                onChange={setYear}
-              >
+              <Listbox value={year} onChange={setYear}>
                 {Array(new Date().getFullYear() - firstYear + 1)
                   .fill(0)
                   .map((_, index) => (

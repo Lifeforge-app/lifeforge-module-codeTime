@@ -4,8 +4,7 @@ import {
   type FlexProps,
   Listbox,
   ListboxOption,
-  Text,
-  surface
+  Text
 } from '@lifeforge/ui'
 
 function IntervalSelector<T extends string>({
@@ -32,7 +31,6 @@ function IntervalSelector<T extends string>({
         {t('labels.inThePast')}
       </Text>
       <Listbox
-        bg={surface.light}
         renderContent={() => (
           <span>{`${lastFor.split(' ')[0]} ${t(`units.${lastFor.split(' ')[1].toLowerCase()}`)}`}</span>
         )}
