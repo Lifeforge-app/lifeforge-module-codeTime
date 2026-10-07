@@ -188,7 +188,7 @@ const CodeTime = () => {
       icon="tabler:chart-line"
       title="Code Time"
     >
-      <Box flex="1">
+      <Box flex="1" minHeight="0" width="100%">
         <WithQuery query={dataQuery}>{() => <>{renderContent()}</>}</WithQuery>
       </Box>
     </Widget>
